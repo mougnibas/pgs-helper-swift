@@ -13,6 +13,7 @@
 //
 
 import Foundation
+import CoreGraphics
 
 print("Reading and decoding PGS file ...")
 
@@ -141,6 +142,9 @@ while input.hasBytesAvailable {
             pleaseMakeMeBetter.append(buffer[index])
         }
         let objectData: [UInt8]                                = pleaseMakeMeBetter
+        
+        // TODO Create a bitmap image from RLE object data.
+        // See https://developer.apple.com/documentation/coregraphics/cgimage/1455149-init
         
         // Create ODS object
         segment = ObjectDefinitionSegment(magicNumber: magicNumber, pts: pts, dts: dts, type: type, size: size, objectId: objectId, objectVersionNumber: objectVersionNumber, sequenceFlag: sequenceFlag, objectDataLength: objectDataLength, width: width, height: height, objectData: objectData)
