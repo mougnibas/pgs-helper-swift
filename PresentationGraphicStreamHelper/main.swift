@@ -65,13 +65,13 @@ while input.hasBytesAvailable {
         let objectHorizontalPosition: Int                                     = Int(twoUInt8ToUInt16(firstByte: buffer[15], lastByte: buffer[16]))
         let objectVerticalPosition: Int                                       = Int(twoUInt8ToUInt16(firstByte: buffer[17], lastByte: buffer[18]))
     
-        // Create the PCS segment object
+        // Create the PCS object
         let pcs = PresentationCompositionSegment(magicNumber: magicNumber, pts: pts, dts: dts, type: type, size: size, width: width, height: height, framerate: framerate, compositionNumber: compositionNumber, compositionState: compositionState, paletteUpdateFlag: paletteUpdateFlag, paletteId: paletteId, numberOfCompositionObjects: numberOfCompositionObjects, objectId: objectId, windowId: windowId, objectCroppedFlag: objectCroppedFlag, objectHorizontalPosition: objectHorizontalPosition, objectVerticalPosition: objectVerticalPosition)
         
         // TODO Remove this debug message
         print(pcs)
         
-        // Is it a Window Definition Segment ?
+    // Is it a Window Definition Segment ?
     case AbstractSegment.SegmentType.WDS :
         
         // Read WDS data
@@ -79,7 +79,19 @@ while input.hasBytesAvailable {
         input.read(buffer, maxLength: size)
         
         // Decode WDS data
-        // TODO Write me
+        let numberOfWindows: Int           = Int(buffer[0])
+        let windowsId: Int                 = Int(buffer[1])
+        let windowsHorizontalPosition: Int = Int(twoUInt8ToUInt16(firstByte: buffer[2], lastByte: buffer[3]))
+        let windowsVerticalPosition: Int   = Int(twoUInt8ToUInt16(firstByte: buffer[4], lastByte: buffer[5]))
+        let windowWidth: Int               = Int(twoUInt8ToUInt16(firstByte: buffer[6], lastByte: buffer[7]))
+        let windowHeight: Int              = Int(twoUInt8ToUInt16(firstByte: buffer[8], lastByte: buffer[9]))
+        
+        // Create the WDS object
+        let wds: WindowDefinitionSegment = WindowDefinitionSegment(magicNumber: magicNumber, pts: pts, dts: dts, type: type, size: size, numberOfWindows: numberOfWindows, windowsId: windowsId, windowsHorizontalPosition: windowsHorizontalPosition, windowsVerticalPosition: windowsVerticalPosition, windowWidth: windowWidth, windowHeight: windowHeight)
+        
+        // TODO Remove this debug message
+        print(wds)
+        
         
     // If the type is NOT any of known type, then something terrible just happpent.
     default :
