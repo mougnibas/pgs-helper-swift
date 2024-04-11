@@ -20,38 +20,73 @@ let input: InputStream = InputStream(fileAtPath: "/Users/yoann/Documents/3-subs.
 // Open it
 input.open()
 
-// Segment header buffer stuff
-let segmentBufferSize = 13
-var segmentBuffer: UnsafeMutablePointer<UInt8>
+// Buffer to use for reading data
+var buffer: UnsafeMutablePointer<UInt8>
 
-var magicNumber: String
-var pts: UInt32
-var dts: UInt32
-var type: SegmentType
-var size: UInt16
-var segment: Segment
+// Define header buffer size
+let headerSegmentBufferSize = 13
 
 // As long as there is stuff in input stream
 while input.hasBytesAvailable {
     
-    // Read the current segment header
-    segmentBuffer = UnsafeMutablePointer<UInt8>.allocate(capacity: segmentBufferSize)
-    input.read(segmentBuffer, maxLength: segmentBufferSize)
+    // Read header segment data
+    buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: headerSegmentBufferSize)
+    input.read(buffer, maxLength: headerSegmentBufferSize)
     
-    // Create a segment
-    magicNumber = String(bytes: [segmentBuffer[0], segmentBuffer[1]], encoding: .ascii)!
-    pts = fourUint8ToUint32(firstByte: segmentBuffer[2], secondByte: segmentBuffer[3], thirdByte: segmentBuffer[4], lastByte: segmentBuffer[5])
-    dts = fourUint8ToUint32(firstByte: segmentBuffer[6], secondByte: segmentBuffer[7], thirdByte: segmentBuffer[8], lastByte: segmentBuffer[9])
-    type = SegmentType(rawValue: segmentBuffer[10])!
-    size = twoUInt8ToUInt16(firstByte: segmentBuffer[11], lastByte: segmentBuffer[12])
-    segment = Segment(magicNumber: magicNumber, pts: pts, dts: dts, type: type, size: size)
+    // Decode header segment data
+    let magicNumber: String               = String(bytes: [buffer[0], buffer[1]], encoding: .ascii)!
+    let pts: Int                          = Int(fourUint8ToUint32(firstByte: buffer[2], secondByte: buffer[3], thirdByte: buffer[4], lastByte: buffer[5]))
+    let dts: Int                          = Int(fourUint8ToUint32(firstByte: buffer[6], secondByte: buffer[7], thirdByte: buffer[8], lastByte: buffer[9]))
+    let type: AbstractSegment.SegmentType = AbstractSegment.SegmentType(rawValue: buffer[10])!
+    let size: Int                         = Int(twoUInt8ToUInt16(firstByte: buffer[11], lastByte: buffer[12]))
     
-    // Debug info
-    print(segment)
+    // Change decoding behavior depending on current segment type
+    switch (type) {
+        
+    // Is it a Presentation Composition Segment ?
+    case AbstractSegment.SegmentType.PCS :
     
-    // TODO Read the next stuff
-    print()
-    _ = readLine()
+        // Read PCS data
+        buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: size)
+        input.read(buffer, maxLength: size)
+        
+        // Decode PCS data
+        let width: Int                                                        = Int(twoUInt8ToUInt16(firstByte: buffer[0], lastByte: buffer[1]))
+        let height: Int                                                       = Int(twoUInt8ToUInt16(firstByte: buffer[2], lastByte: buffer[3]))
+        let framerate: Int                                                    = Int(buffer[4])
+        let compositionNumber: Int                                            = Int(twoUInt8ToUInt16(firstByte: buffer[5], lastByte: buffer[6]))
+        let compositionState: PresentationCompositionSegment.CompositionState = PresentationCompositionSegment.CompositionState(rawValue: buffer[7])!
+        let paletteUpdateFlag: Bool                                           = buffer[8] == 0x80 ? true : false
+        let paletteId: Int                                                    = Int(buffer[9])
+        let numberOfCompositionObjects: Int                                   = Int(buffer[10])
+        let objectId: Int                                                     = Int(twoUInt8ToUInt16(firstByte: buffer[11], lastByte: buffer[12]))
+        let windowId: Int                                                     = Int(buffer[13])
+        let objectCroppedFlag: Bool                                           = buffer[14] == 0x40 ? true : false
+        let objectHorizontalPosition: Int                                     = Int(twoUInt8ToUInt16(firstByte: buffer[15], lastByte: buffer[16]))
+        let objectVerticalPosition: Int                                       = Int(twoUInt8ToUInt16(firstByte: buffer[17], lastByte: buffer[18]))
+    
+        // Create the PCS segment object
+        let pcs = PresentationCompositionSegment(magicNumber: magicNumber, pts: pts, dts: dts, type: type, size: size, width: width, height: height, framerate: framerate, compositionNumber: compositionNumber, compositionState: compositionState, paletteUpdateFlag: paletteUpdateFlag, paletteId: paletteId, numberOfCompositionObjects: numberOfCompositionObjects, objectId: objectId, windowId: windowId, objectCroppedFlag: objectCroppedFlag, objectHorizontalPosition: objectHorizontalPosition, objectVerticalPosition: objectVerticalPosition)
+        
+        // TODO Remove this debug message
+        print(pcs)
+        
+        // Is it a Window Definition Segment ?
+    case AbstractSegment.SegmentType.WDS :
+        
+        // Read WDS data
+        buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: size)
+        input.read(buffer, maxLength: size)
+        
+        // Decode WDS data
+        // TODO Write me
+        
+    // If the type is NOT any of known type, then something terrible just happpent.
+    default :
+    
+        // Just exit the program
+        exit(-1)
+    }
 }
 
 print("Swift is easy");

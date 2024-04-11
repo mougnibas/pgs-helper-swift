@@ -6,7 +6,7 @@
 // of this license document, but changing it is not allowed.
 
 //
-//  Segment.swift
+//  AbstractSegment.swift
 //  PresentationGraphicStreamHelper
 //
 //  Created by Yoann MOUGNIBAS on 10/04/2024.
@@ -14,8 +14,8 @@
 
 import Foundation
 
-/// A segment.
-public class Segment : CustomStringConvertible {
+/// An abstract segment.
+public class AbstractSegment : CustomStringConvertible {
     
     /// Magic numer (should be "PG").
     public let magicNumber: String
@@ -30,7 +30,7 @@ public class Segment : CustomStringConvertible {
     public let type: SegmentType
     
     /// Segment size.
-    public let size: UInt16
+    public let size: Int
     
     /// Initiliaze the segment.
     ///
@@ -40,15 +40,34 @@ public class Segment : CustomStringConvertible {
     ///     - dts: Decoding Timestamp (should be 0).
     ///     - type: Segment type (PDS, ODS, PCS, WDS or END).
     ///     - size: Segment size.
-    public init(magicNumber: String, pts: UInt32, dts: UInt32, type: SegmentType, size: UInt16) {
+    internal init(magicNumber: String, pts: Int, dts: Int, type: SegmentType, size: Int) {
         self.magicNumber = magicNumber
         self.pts  = Float(pts) / 90.0
         self.dts  = Float(dts) / 90.0
         self.type = type
-        self.size = size
+        self.size = Int(size)
     }
     
     public var description: String {
-        return "Segment(magicNumber=\"\(magicNumber)\", pts=\(pts), dts=\"\(dts)\", type=\"\(type)\", size=\"\(size)\",)"
+        return "AbstractSegment(magicNumber='\(magicNumber)', pts='\(pts)', dts='\(dts)', type='\(type)', size='\(size)')"
+    }
+    
+    /// A segment type.
+    public enum SegmentType: UInt8 {
+        
+        /// Presentation Composition Segment.
+        case PCS = 0x16
+        
+        /// Window Definition Segment.
+        case WDS = 0x17
+        
+        /// Palette Definition Segment.
+        case PDS = 0x14
+        
+        /// Object Definition Segment.
+        case ODS = 0x15
+        
+        /// End of Display Set Segment.
+        case END = 0x80
     }
 }
