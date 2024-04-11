@@ -114,7 +114,7 @@ while input.hasBytesAvailable {
         // TODO Remove this debug message
         print(wds)
         
-    // Is it a Object Definition Segment (ODS) ?
+    // Is it an Object Definition Segment (ODS) ?
     case AbstractSegment.SegmentType.ODS :
         
         // Read ODS data
@@ -141,12 +141,15 @@ while input.hasBytesAvailable {
         // TODO Remove this debug message
         print(ods)
         
+    // Is it and End Segment (END) ?
+    case AbstractSegment.SegmentType.END :
         
-    // If the type is NOT any of known type, then something terrible just happpent.
-    default :
-    
-        // Just exit the program
-        exit(-1)
+        // Nothing more to read.
+        // Just create END object
+        let end: EndSegment = EndSegment(magicNumber: magicNumber, pts: pts, dts: dts, type: type, size: size)
+        
+        // TODO Remove this debug message
+        print(end)
     }
 }
 
