@@ -43,7 +43,7 @@ while input.hasBytesAvailable {
     // Change decoding behavior depending on current segment type
     switch (type) {
         
-    // Is it a Presentation Composition Segment ?
+    // Is it a Presentation Composition Segment (PCS) ?
     case AbstractSegment.SegmentType.PCS :
     
         // Read PCS data
@@ -71,7 +71,7 @@ while input.hasBytesAvailable {
         // TODO Remove this debug message
         print(pcs)
         
-    // Is it a Window Definition Segment ?
+    // Is it a Window Definition Segment (WDS) ?
     case AbstractSegment.SegmentType.WDS :
         
         // Read WDS data
@@ -92,7 +92,7 @@ while input.hasBytesAvailable {
         // TODO Remove this debug message
         print(wds)
         
-    // Is it a Palette Definition Segment ?
+    // Is it a Palette Definition Segment (PDS) ?
     case AbstractSegment.SegmentType.PDS :
         
         // Read PDS data
@@ -113,6 +113,33 @@ while input.hasBytesAvailable {
         
         // TODO Remove this debug message
         print(wds)
+        
+    // Is it a Object Definition Segment (ODS) ?
+    case AbstractSegment.SegmentType.ODS :
+        
+        // Read ODS data
+        buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: size)
+        input.read(buffer, maxLength: size)
+        
+        // Decode ODS data
+        let objectId: Int                                      = Int(twoUInt8ToUInt16(firstByte: buffer[0], lastByte: buffer[1]))
+        let objectVersionNumber: Int                           = Int(buffer[2])
+        let sequenceFlag: ObjectDefinitionSegment.SequenceFlag = ObjectDefinitionSegment.SequenceFlag(rawValue: buffer[3])!
+        let objectDataLength: Int                              = Int(fourUint8ToUint32(firstByte: 0x00, secondByte: buffer[4], thirdByte: buffer[5], lastByte: buffer[6]))
+        let width: Int                                         = Int(twoUInt8ToUInt16(firstByte: buffer[7], lastByte: buffer[8]))
+        let height: Int                                        = Int(twoUInt8ToUInt16(firstByte: buffer[9], lastByte: buffer[10]))
+        // TODO Find a better way to populate this array of bytes...
+        var pleaseMakeMeBetter: [UInt8] = []
+        for index in 11 ... size {
+            pleaseMakeMeBetter.append(buffer[index])
+        }
+        let objectData: [UInt8]                                = pleaseMakeMeBetter
+        
+        // Create ODS object
+        let ods: ObjectDefinitionSegment = ObjectDefinitionSegment(magicNumber: magicNumber, pts: pts, dts: dts, type: type, size: size, objectId: objectId, objectVersionNumber: objectVersionNumber, sequenceFlag: sequenceFlag, objectDataLength: objectDataLength, width: width, height: height, objectData: objectData)
+        
+        // TODO Remove this debug message
+        print(ods)
         
         
     // If the type is NOT any of known type, then something terrible just happpent.
