@@ -14,6 +14,13 @@
 
 import Foundation
 
+print("Reading and decoding PGS file ...")
+
+// Create an empty array.
+// It will grow automatically.
+// We don't know the size yet at creation time.
+var segments: [AbstractSegment] = []
+
 // Create the input stream
 let input: InputStream = InputStream(fileAtPath: "/Users/yoann/Documents/3-subs.sup")!;
 
@@ -31,7 +38,13 @@ while input.hasBytesAvailable {
     
     // Read header segment data
     buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: headerSegmentBufferSize)
-    input.read(buffer, maxLength: headerSegmentBufferSize)
+    let readed: Int = input.read(buffer, maxLength: headerSegmentBufferSize)
+    
+    // If we read 0 byte, we are done
+    if (readed == 0) {
+        input.close()
+        continue
+    }
     
     // Decode header segment data
     let magicNumber: String               = String(bytes: [buffer[0], buffer[1]], encoding: .ascii)!
@@ -39,6 +52,9 @@ while input.hasBytesAvailable {
     let dts: Int                          = Int(fourUint8ToUint32(firstByte: buffer[6], secondByte: buffer[7], thirdByte: buffer[8], lastByte: buffer[9]))
     let type: AbstractSegment.SegmentType = AbstractSegment.SegmentType(rawValue: buffer[10])!
     let size: Int                         = Int(twoUInt8ToUInt16(firstByte: buffer[11], lastByte: buffer[12]))
+    
+    // The segment to add later to the list
+    let segment: AbstractSegment
     
     // Change decoding behavior depending on current segment type
     switch (type) {
@@ -66,10 +82,7 @@ while input.hasBytesAvailable {
         let objectVerticalPosition: Int                                       = Int(twoUInt8ToUInt16(firstByte: buffer[17], lastByte: buffer[18]))
     
         // Create the PCS object
-        let pcs = PresentationCompositionSegment(magicNumber: magicNumber, pts: pts, dts: dts, type: type, size: size, width: width, height: height, framerate: framerate, compositionNumber: compositionNumber, compositionState: compositionState, paletteUpdateFlag: paletteUpdateFlag, paletteId: paletteId, numberOfCompositionObjects: numberOfCompositionObjects, objectId: objectId, windowId: windowId, objectCroppedFlag: objectCroppedFlag, objectHorizontalPosition: objectHorizontalPosition, objectVerticalPosition: objectVerticalPosition)
-        
-        // TODO Remove this debug message
-        print(pcs)
+        segment = PresentationCompositionSegment(magicNumber: magicNumber, pts: pts, dts: dts, type: type, size: size, width: width, height: height, framerate: framerate, compositionNumber: compositionNumber, compositionState: compositionState, paletteUpdateFlag: paletteUpdateFlag, paletteId: paletteId, numberOfCompositionObjects: numberOfCompositionObjects, objectId: objectId, windowId: windowId, objectCroppedFlag: objectCroppedFlag, objectHorizontalPosition: objectHorizontalPosition, objectVerticalPosition: objectVerticalPosition)
         
     // Is it a Window Definition Segment (WDS) ?
     case AbstractSegment.SegmentType.WDS :
@@ -87,10 +100,7 @@ while input.hasBytesAvailable {
         let windowHeight: Int              = Int(twoUInt8ToUInt16(firstByte: buffer[8], lastByte: buffer[9]))
         
         // Create the WDS object
-        let wds: WindowDefinitionSegment = WindowDefinitionSegment(magicNumber: magicNumber, pts: pts, dts: dts, type: type, size: size, numberOfWindows: numberOfWindows, windowsId: windowsId, windowsHorizontalPosition: windowsHorizontalPosition, windowsVerticalPosition: windowsVerticalPosition, windowWidth: windowWidth, windowHeight: windowHeight)
-        
-        // TODO Remove this debug message
-        print(wds)
+        segment = WindowDefinitionSegment(magicNumber: magicNumber, pts: pts, dts: dts, type: type, size: size, numberOfWindows: numberOfWindows, windowsId: windowsId, windowsHorizontalPosition: windowsHorizontalPosition, windowsVerticalPosition: windowsVerticalPosition, windowWidth: windowWidth, windowHeight: windowHeight)
         
     // Is it a Palette Definition Segment (PDS) ?
     case AbstractSegment.SegmentType.PDS :
@@ -109,10 +119,7 @@ while input.hasBytesAvailable {
         let transparency: Int         = Int(buffer[6])
         
         // Create PDS object
-        let wds: PaletteDefinitionSegment = PaletteDefinitionSegment(magicNumber: magicNumber, pts: pts, dts: dts, type: type, size: size, paletteId: paletteId, paletteVersionNumber: paletteVersionNumber, paletteEntryId: paletteEntryId, luminance: luminance, colorDifferenceRed: colorDifferenceRed, colorDifferenceBlue: colorDifferenceBlue, transparency: transparency)
-        
-        // TODO Remove this debug message
-        print(wds)
+        segment = PaletteDefinitionSegment(magicNumber: magicNumber, pts: pts, dts: dts, type: type, size: size, paletteId: paletteId, paletteVersionNumber: paletteVersionNumber, paletteEntryId: paletteEntryId, luminance: luminance, colorDifferenceRed: colorDifferenceRed, colorDifferenceBlue: colorDifferenceBlue, transparency: transparency)
         
     // Is it an Object Definition Segment (ODS) ?
     case AbstractSegment.SegmentType.ODS :
@@ -136,24 +143,21 @@ while input.hasBytesAvailable {
         let objectData: [UInt8]                                = pleaseMakeMeBetter
         
         // Create ODS object
-        let ods: ObjectDefinitionSegment = ObjectDefinitionSegment(magicNumber: magicNumber, pts: pts, dts: dts, type: type, size: size, objectId: objectId, objectVersionNumber: objectVersionNumber, sequenceFlag: sequenceFlag, objectDataLength: objectDataLength, width: width, height: height, objectData: objectData)
-        
-        // TODO Remove this debug message
-        print(ods)
+        segment = ObjectDefinitionSegment(magicNumber: magicNumber, pts: pts, dts: dts, type: type, size: size, objectId: objectId, objectVersionNumber: objectVersionNumber, sequenceFlag: sequenceFlag, objectDataLength: objectDataLength, width: width, height: height, objectData: objectData)
         
     // Is it and End Segment (END) ?
     case AbstractSegment.SegmentType.END :
         
         // Nothing more to read.
         // Just create END object
-        let end: EndSegment = EndSegment(magicNumber: magicNumber, pts: pts, dts: dts, type: type, size: size)
-        
-        // TODO Remove this debug message
-        print(end)
+        segment = EndSegment(magicNumber: magicNumber, pts: pts, dts: dts, type: type, size: size)
     }
+    
+    // Add the current segment to the list of segments
+    segments.append(segment)
 }
 
-print("Swift is easy");
+print("Reading and decoding PGS file done !")
 
 /// Transform 4 unsigned bytes (UInt8) to a bigger UInt32 bytes
 ///
