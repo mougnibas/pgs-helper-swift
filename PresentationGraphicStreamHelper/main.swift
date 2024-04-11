@@ -92,6 +92,28 @@ while input.hasBytesAvailable {
         // TODO Remove this debug message
         print(wds)
         
+    // Is it a Palette Definition Segment ?
+    case AbstractSegment.SegmentType.PDS :
+        
+        // Read PDS data
+        buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: size)
+        input.read(buffer, maxLength: size)
+        
+        // Decode PDS data
+        let paletteId: Int            = Int(buffer[0])
+        let paletteVersionNumber: Int = Int(buffer[1])
+        let paletteEntryId: Int       = Int(buffer[2])
+        let luminance: Int            = Int(buffer[3])
+        let colorDifferenceRed: Int   = Int(buffer[4])
+        let colorDifferenceBlue: Int  = Int(buffer[5])
+        let transparency: Int         = Int(buffer[6])
+        
+        // Create PDS object
+        let wds: PaletteDefinitionSegment = PaletteDefinitionSegment(magicNumber: magicNumber, pts: pts, dts: dts, type: type, size: size, paletteId: paletteId, paletteVersionNumber: paletteVersionNumber, paletteEntryId: paletteEntryId, luminance: luminance, colorDifferenceRed: colorDifferenceRed, colorDifferenceBlue: colorDifferenceBlue, transparency: transparency)
+        
+        // TODO Remove this debug message
+        print(wds)
+        
         
     // If the type is NOT any of known type, then something terrible just happpent.
     default :

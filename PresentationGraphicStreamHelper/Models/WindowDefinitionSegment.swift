@@ -6,7 +6,7 @@
 // of this license document, but changing it is not allowed.
 
 //
-//  PresentationCompositionSegment.swift
+//  WindowDefinitionSegment.swift
 //  PresentationGraphicStreamHelper
 //
 //  Created by Yoann MOUGNIBAS on 11/04/2024.
