@@ -136,17 +136,11 @@ public class Utils {
                 // If discriminiator is 0x02, then it's "L pixels in color C (L between 3 and 63)".
                 case 0x02 :
                     
-                    // We take a subpart of next byte
-                    let firstPart: UInt8 = nextByte & 0x3F
-                    
-                    // We need the next next byte
-                    let lastPart: UInt8 = fromRLE[2]
-                    
-                    // Convert the pixels count
-                    let pixels: Int = Int( convert(firstByte: firstPart, lastByte: lastPart) )
+                    // Compute the pixels count
+                    let pixels: Int = Int( nextByte & 0x3F )
                     
                     // Get color
-                    let color: Int  = Int( fromRLE[3] )
+                    let color: Int  = Int( fromRLE[2] )
                     
                     // TODO Remove this debug line
                     print("L pixels in color C (L between 3 and 63) : '\(pixels)' and '\(color)'")
@@ -154,9 +148,17 @@ public class Utils {
                 // If discriminiator is 0x03, then it's "L pixels in color C (L between 64 and 16383)".
                 case 0x03 :
                     
-                    // Compute pixels count and get color
-                    let pixels: Int = Int( nextByte & 0x3F )
-                    let color: Int  = Int( fromRLE[2] )
+                    // We take a subpart of next byte
+                    let firstPart: UInt8 = nextByte & 0x3F
+                    
+                    // We need the next next byte
+                    let lastPart: UInt8 = fromRLE[2]
+                    
+                    //  Convert the pixels count
+                    let pixels: Int = Int( convert(firstByte: firstPart, lastByte: lastPart) )
+                    
+                    // Get color
+                    let color: Int  = Int( fromRLE[3] )
                     
                     // TODO Remove this debug line
                     print("L pixels in color C (L between 64 and 16383) : '\(pixels)' and '\(color)'")
