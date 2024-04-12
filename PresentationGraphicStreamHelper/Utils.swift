@@ -77,15 +77,25 @@ public class Utils {
     /// // See https://developer.apple.com/documentation/coregraphics/cgimage/1455149-init
     ///
     /// - Parameters:
-    ///     - fromRLE: RLE object data
+    ///     - fromRLE: RLE object data.
+    ///     - width : Image width in pixels.
+    ///     - height : Image height in pixels.
     ///
-    /// - Returns:
-    static func convert(fromRLE: [UInt8]) -> PixelMap {
+    /// - Returns: The decoded pixel map representation of RLE image.
+    static func convert(fromRLE: [UInt8], width: Int, height: Int) -> PixelMap {
         
-        // TODO Write me.
-        return PixelMap(width: 3, height: 3, buffer: [ 0xFF, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0xFF,
-                                                       0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF,
-                                                       0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF ])
+        // TODO Write this method
+        
+        // PixelMap members
+        let buffer: [UInt8] = [ 0xFF, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0xFF,
+                                0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF,
+                                0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF ]
+        
+        // Create the PixelMap
+        let pixelMap : PixelMap = PixelMap(width: 3, height: 3, buffer: buffer)
+        
+        // Return the PixelMap
+        return pixelMap
     }
     
     /// Convert from bitmap pixel map to CoreImage Image.

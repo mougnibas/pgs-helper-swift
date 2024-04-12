@@ -43,21 +43,29 @@ struct EntryPoint {
     ///     - segments: Segments to make bitmaps from
     static func makeBitmaps(segments: [AbstractSegment]) {
         
+        // This variable will store the current subtitle identifier
+        var currentId: Int = -1
+        
         // for each segments
         for segment in segments {
+            
+            // PCS will store current subtitle ID
+            if let pcs = segment as? PresentationCompositionSegment {
+                currentId = pcs.compositionNumber
+            }
             
             // Only works with ODS
             if let ods = segment as? ObjectDefinitionSegment {
                 
                 // Create a bitmap image from RLE object data.
-                let pixelMap: Utils.PixelMap = Utils.convert(fromRLE: ods.objectData)
+                let pixelMap: Utils.PixelMap = Utils.convert(fromRLE: ods.objectData, width: ods.width, height: ods.height)
                 
                 // Convert the pixel map to CI Image
                 let image: CIImage = Utils.convert(pixelMap: pixelMap)
                 
                 // TODO Remove this debug lines
                 do {
-                    let destination: String = "/Users/yoann/Documents/image.png"
+                    let destination: String = "/Users/yoann/Documents/subs/" + String(currentId) + ".png"
                     try Utils.write(image: image, destination: destination)
                 } catch {
                     print("Something gone wrong")

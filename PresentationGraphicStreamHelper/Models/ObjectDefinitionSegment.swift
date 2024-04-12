@@ -17,7 +17,7 @@ import Foundation
 /// An Object Definition Segment (ODS).
 public class ObjectDefinitionSegment : AbstractSegment {
     
-    /// ID of this object..
+    /// ID of this object.
     public let objectId: Int
     
     /// Version of this object.
