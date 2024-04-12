@@ -24,14 +24,53 @@ struct EntryPoint {
     static func main() {
         
         print("Reading and decoding PGS file ...")
+        let segments: [AbstractSegment] = makeSegments(filepath: "/Users/yoann/Documents/3-subs.sup")
+        print("Reading and decoding PGS file done !")
+        print()
+        
+        print("Creating bitmaps from RLE object data ...")
+        makeBitmaps(segments: segments)
+        print("Creating bitmaps from RLE object data done !")
+        print()
 
+        // We are done
+        exit(0)
+    }
+    
+    /// Make bitmaps from segments.
+    ///
+    /// - Parameters :
+    ///     - segments: Segments to make bitmaps from
+    static func makeBitmaps(segments: [AbstractSegment]) {
+        
+        // for each segments
+        for segment in segments {
+            
+            // Only works with ODS
+            if let ods = segment as? ObjectDefinitionSegment {
+                
+                // Create a bitmap image from RLE object data.
+                // See https://developer.apple.com/documentation/coregraphics/cgimage/1455149-init
+                let pixelMap: [[UInt8]] = Utils.convert(fromRLE: ods.objectData)
+            }
+        }
+    }
+    
+    /// Make segments from a given PGS (sup) file
+    ///
+    /// - Parameters:
+    ///     - filepath: The path to a PGS (sup) file.
+    ///
+    /// - Returns : An array of segments.
+    static func makeSegments(filepath: String) -> [AbstractSegment] {
+        
         // Create an empty array.
         // It will grow automatically.
         // We don't know the size yet at creation time.
         var segments: [AbstractSegment] = []
 
         // Create the input stream
-        let input: InputStream = InputStream(fileAtPath: "/Users/yoann/Documents/3-subs.sup")!;
+        let input: InputStream = InputStream(fileAtPath: filepath)!;
 
         // Open it
         input.open()
@@ -151,9 +190,6 @@ struct EntryPoint {
                 }
                 let objectData: [UInt8]                                = pleaseMakeMeBetter
                 
-                // TODO Create a bitmap image from RLE object data.
-                // See https://developer.apple.com/documentation/coregraphics/cgimage/1455149-init
-                
                 // Create ODS object
                 segment = ObjectDefinitionSegment(magicNumber: magicNumber, pts: pts, dts: dts, type: type, size: size, objectId: objectId, objectVersionNumber: objectVersionNumber, sequenceFlag: sequenceFlag, objectDataLength: objectDataLength, width: width, height: height, objectData: objectData)
                 
@@ -168,10 +204,8 @@ struct EntryPoint {
             // Add the current segment to the list of segments
             segments.append(segment)
         }
-
-        print("Reading and decoding PGS file done !")
-
-        // We are done
-        exit(0)
+        
+        // Return the segments
+        return segments
     }
 }

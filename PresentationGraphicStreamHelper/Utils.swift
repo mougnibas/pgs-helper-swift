@@ -70,5 +70,19 @@ public class Utils {
         // Return the result
         return twoBytesUnsignedInt
     }
+    
+    /// Convert from RLE object data to pixel map.
+    ///
+    /// // See https://developer.apple.com/documentation/coregraphics/cgimage/1455149-init
+    ///
+    /// - Parameters:
+    ///     - fromRLE: RLE object data
+    ///
+    /// - Returns: A pixel map (bitmal).
+    static func convert(fromRLE: [UInt8]) -> [ [UInt8] ] {
+        
+        // TODO Write me.
+        return [ [], [] ]
+    }
 
 }
