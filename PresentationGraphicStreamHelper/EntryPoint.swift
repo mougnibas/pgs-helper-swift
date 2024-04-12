@@ -13,7 +13,7 @@
 //
 
 import Foundation
-import CoreGraphics
+import CoreImage
 
 /// I don't like standalone root level code.
 /// Let's add some useless code for feel good purpose.
@@ -50,8 +50,19 @@ struct EntryPoint {
             if let ods = segment as? ObjectDefinitionSegment {
                 
                 // Create a bitmap image from RLE object data.
-                // See https://developer.apple.com/documentation/coregraphics/cgimage/1455149-init
-                let pixelMap: [[UInt8]] = Utils.convert(fromRLE: ods.objectData)
+                let pixelMap: Utils.PixelMap = Utils.convert(fromRLE: ods.objectData)
+                
+                // Convert the pixel map to CI Image
+                let image: CIImage = Utils.convert(pixelMap: pixelMap)
+                
+                // TODO Remove this debug lines
+                do {
+                    let destination: String = "/Users/yoann/Documents/image.png"
+                    try Utils.write(image: image, destination: destination)
+                } catch {
+                    print("Something gone wrong")
+                    exit(-1)
+                }
             }
         }
     }

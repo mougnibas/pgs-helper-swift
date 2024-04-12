@@ -13,6 +13,7 @@
 //
 
 import Foundation
+import CoreImage
 
 /// Utility class.
 public class Utils {
@@ -78,11 +79,94 @@ public class Utils {
     /// - Parameters:
     ///     - fromRLE: RLE object data
     ///
-    /// - Returns: A pixel map (bitmal).
-    static func convert(fromRLE: [UInt8]) -> [ [UInt8] ] {
+    /// - Returns:
+    static func convert(fromRLE: [UInt8]) -> PixelMap {
         
         // TODO Write me.
-        return [ [], [] ]
+        return PixelMap(width: 3, height: 3, buffer: [ 0xFF, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0xFF,
+                                                       0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF,
+                                                       0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF ])
+    }
+    
+    /// Convert from bitmap pixel map to CoreImage Image.
+    ///
+    /// - Parameters :
+    ///     - pixelMap : The pixel map structure.
+    ///
+    /// - Returns : An image in CoreImage format.
+    static func convert(pixelMap: PixelMap) -> CIImage {
+        
+        // Elements of CI Image
+        let bitmapData: Data = Data(pixelMap.buffer)
+        let bytesPerRow: Int = pixelMap.width * 4
+        let size: CGSize = CGSize(width: pixelMap.width, height: pixelMap.height)
+        let colorSpace: CGColorSpace = CGColorSpaceCreateDeviceRGB()
+        
+        // Create the CI Image
+        let ciImage = CIImage(bitmapData: bitmapData,
+                              bytesPerRow: bytesPerRow,
+                              size: size,
+                              format: CIFormat.RGBA8,
+                              colorSpace: colorSpace)
+        
+        // Return the CI Image
+        return ciImage
+    }
+    
+    /// Convert from bitmap pixel map to CoreGraphics Image.
+    ///
+    /// - Parameters :
+    ///     - pixelMap : The pixel map structure.
+    ///
+    /// - Returns : An image in CoreGraphics format.
+    static func convert(pixelMap: PixelMap) -> CGImage {
+        
+        // Create a CI Image
+        let image: CIImage = convert(pixelMap: pixelMap)
+        
+        // Create a default context
+        let context: CIContext = CIContext()
+        
+        // Create a CGImage from CIImage
+        let cgimage: CGImage = context.createCGImage(image, from: image.extent)!
+        
+        // Return the CGImage
+        return cgimage
+    }
+    
+    /// Write a CIImage to a destination file, in PNG format.
+    ///
+    /// - Parameters :
+    ///     - image : The CIImage to write
+    ///     - destination : The destination file, in PNG format.
+    ///
+    /// - Throws : An error if we can't write the file.
+    static func write(image: CIImage, destination: String) throws {
+        
+        // Create a default context
+        let context: CIContext = CIContext()
+        
+        // Create a PNG representation of the image
+        let format: CIFormat = CIFormat.RGBA8
+        let colorSpace: CGColorSpace = image.colorSpace!
+        let imageData = context.pngRepresentation(of: image, format: format, colorSpace: colorSpace)!
+        
+        // Try to write the file
+        let url: URL = URL(fileURLWithPath: destination)
+        try imageData.write(to: url)
+    }
+    
+    /// A pixel map.
+    public struct PixelMap {
+        
+        /// Width in pixels.
+        let width: Int
+        
+        /// Height in pixels.
+        let height: Int
+        
+        /// A RGBA buffer (Red, Green, Blue, Alpha components). One byte per component.
+        let buffer: [UInt8]
     }
 
 }
