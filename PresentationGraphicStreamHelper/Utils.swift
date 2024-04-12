@@ -84,88 +84,117 @@ public class Utils {
     /// - Returns: The decoded pixel map representation of RLE image.
     static func convert(fromRLE: [UInt8], width: Int, height: Int) -> PixelMap {
         
-        // TODO Write this method
+        // Index used to move
+        var index: Int = 0
         
-        // Get the very first byte
-        let currentByte: UInt8 = fromRLE[0]
-        let nextByte: UInt8
-        
-        // If this byte is NOT 0x00, then it's "One pixel in color C".
-        if (currentByte != 0x00) {
-           
-            print("One pixel in '\(currentByte)' color")
+        // As long as there is byte to read
+        while (index < fromRLE.count - 1) {
             
-        } else {
+            // Get the very first byte
+            let currentByte: UInt8 = fromRLE[0 + index]
+            let nextByte: UInt8
             
-            // Read next byte
-            nextByte = fromRLE[1]
-            
-            // If this next byte is 0x00, then it's "End of line".
-            if (nextByte == 0x00) {
+            // If this byte is NOT 0x00, then it's "One pixel in color C".
+            if (currentByte != 0x00) {
                 
-                print("End of line")
+                // Move the index
+                index = index + 1
+                
+                // TODO Remove this debug line
+                print("One pixel in color C : '\(currentByte)'")
                 
             } else {
                 
-                // Compute the discriminator
-                let discriminator = (nextByte & 0xC0) >> 6
+                // Read next byte
+                nextByte = fromRLE[1 + index]
                 
-                // Act according to the discriminator
-                switch (discriminator) {
+                // If this next byte is 0x00, then it's "End of line".
+                if (nextByte == 0x00) {
                     
-                // If discriminiator is 0x00, then it's "L pixels in color 0 (L between 1 and 63)".
-                case 0x00 :
-                    let pixels: Int = Int( nextByte & 0x3F )
-                    print("L pixels in color 0 (L between 1 and 63) : '\(pixels)'")
-                    
-                // If discriminiator is 0x01, then it's "L pixels in color 0 (L between 64 and 16383)".
-                case 0x01 :
-                    
-                    // We take a subpart of next byte
-                    let firstPart: UInt8 = nextByte & 0x3F
-                    
-                    // We need the next next byte
-                    let lastPart: UInt8 = fromRLE[2]
-                    
-                    // Convert the result
-                    let pixels: Int = Int( convert(firstByte: firstPart, lastByte: lastPart) )
+                    // Move the index
+                    index = index + 2
                     
                     // TODO Remove this debug line
-                    print("L pixels in color 0 (L between 64 and 16383) : '\(pixels)'")
+                    print("End of line")
                     
-                // If discriminiator is 0x02, then it's "L pixels in color C (L between 3 and 63)".
-                case 0x02 :
+                } else {
                     
-                    // Compute the pixels count
-                    let pixels: Int = Int( nextByte & 0x3F )
+                    // Compute the discriminator
+                    let discriminator = (nextByte & 0xC0) >> 6
                     
-                    // Get color
-                    let color: Int  = Int( fromRLE[2] )
-                    
-                    // TODO Remove this debug line
-                    print("L pixels in color C (L between 3 and 63) : '\(pixels)' and '\(color)'")
-                    
-                // If discriminiator is 0x03, then it's "L pixels in color C (L between 64 and 16383)".
-                case 0x03 :
-                    
-                    // We take a subpart of next byte
-                    let firstPart: UInt8 = nextByte & 0x3F
-                    
-                    // We need the next next byte
-                    let lastPart: UInt8 = fromRLE[2]
-                    
-                    //  Convert the pixels count
-                    let pixels: Int = Int( convert(firstByte: firstPart, lastByte: lastPart) )
-                    
-                    // Get color
-                    let color: Int  = Int( fromRLE[3] )
-                    
-                    // TODO Remove this debug line
-                    print("L pixels in color C (L between 64 and 16383) : '\(pixels)' and '\(color)'")
-                    
-                default :
-                    print("We shouldn't be here")
-                    exit(-1)
+                    // Act according to the discriminator
+                    switch (discriminator) {
+                        
+                    // If discriminiator is 0x00, then it's "L pixels in color 0 (L between 1 and 63)".
+                    case 0x00 :
+                        
+                        // We take a subpart
+                        let pixels: Int = Int( nextByte & 0x3F )
+                        
+                        // Move the index
+                        index = index + 2
+                        
+                        // TODO Remove this debug line
+                        print("L pixels in color 0 (L between 1 and 63) : '\(pixels)'")
+                        
+                    // If discriminiator is 0x01, then it's "L pixels in color 0 (L between 64 and 16383)".
+                    case 0x01 :
+                        
+                        // We take a subpart of next byte
+                        let firstPart: UInt8 = nextByte & 0x3F
+                        
+                        // We need the next next byte
+                        let lastPart: UInt8 = fromRLE[2 + index]
+                        
+                        // Convert the result
+                        let pixels: Int = Int( convert(firstByte: firstPart, lastByte: lastPart) )
+                        
+                        // Move the index
+                        index = index + 3
+                        
+                        // TODO Remove this debug line
+                        print("L pixels in color 0 (L between 64 and 16383) : '\(pixels)'")
+                        
+                    // If discriminiator is 0x02, then it's "L pixels in color C (L between 3 and 63)".
+                    case 0x02 :
+                        
+                        // Compute the pixels count
+                        let pixels: Int = Int( nextByte & 0x3F )
+                        
+                        // Get color
+                        let color: Int  = Int( fromRLE[2 + index] )
+                        
+                        // Move the index
+                        index = index + 3
+                        
+                        // TODO Remove this debug line
+                        print("L pixels in color C (L between 3 and 63) : '\(pixels)' and '\(color)'")
+                        
+                    // If discriminiator is 0x03, then it's "L pixels in color C (L between 64 and 16383)".
+                    case 0x03 :
+                        
+                        // We take a subpart of next byte
+                        let firstPart: UInt8 = nextByte & 0x3F
+                        
+                        // We need the next next byte
+                        let lastPart: UInt8 = fromRLE[2 + index]
+                        
+                        //  Convert the pixels count
+                        let pixels: Int = Int( convert(firstByte: firstPart, lastByte: lastPart) )
+                        
+                        // Get color
+                        let color: Int  = Int( fromRLE[3 + index] )
+                        
+                        // Move the index
+                        index = index + 4
+                        
+                        // TODO Remove this debug line
+                        print("L pixels in color C (L between 64 and 16383) : '\(pixels)' and '\(color)'")
+                        
+                    default :
+                        print("We shouldn't be here")
+                        exit(-1)
+                    }
                 }
             }
         }
