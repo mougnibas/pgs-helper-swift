@@ -12,8 +12,9 @@
 		8F48767A2BC86B6500ABB980 /* PaletteDefinitionSegment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4876792BC86B6500ABB980 /* PaletteDefinitionSegment.swift */; };
 		8F48767C2BC879E300ABB980 /* ObjectDefinitionSegment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F48767B2BC879E300ABB980 /* ObjectDefinitionSegment.swift */; };
 		8F48767E2BC8846400ABB980 /* EndSegment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F48767D2BC8846400ABB980 /* EndSegment.swift */; };
-		8FB71B8E2BC31C150008BB52 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB71B8D2BC31C150008BB52 /* main.swift */; };
+		8FB71B8E2BC31C150008BB52 /* EntryPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB71B8D2BC31C150008BB52 /* EntryPoint.swift */; };
 		8FD129C12BC6C20B00FFA497 /* AbstractSegment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD129C02BC6C20B00FFA497 /* AbstractSegment.swift */; };
+		8FF53EE32BC9586A005EF4DD /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF53EE22BC9586A005EF4DD /* Utils.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -35,8 +36,9 @@
 		8F48767B2BC879E300ABB980 /* ObjectDefinitionSegment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectDefinitionSegment.swift; sourceTree = "<group>"; };
 		8F48767D2BC8846400ABB980 /* EndSegment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EndSegment.swift; sourceTree = "<group>"; };
 		8FB71B8A2BC31C150008BB52 /* PresentationGraphicStreamHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PresentationGraphicStreamHelper; sourceTree = BUILT_PRODUCTS_DIR; };
-		8FB71B8D2BC31C150008BB52 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		8FB71B8D2BC31C150008BB52 /* EntryPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryPoint.swift; sourceTree = "<group>"; };
 		8FD129C02BC6C20B00FFA497 /* AbstractSegment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbstractSegment.swift; sourceTree = "<group>"; };
+		8FF53EE22BC9586A005EF4DD /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,8 +71,9 @@
 		8FB71B8C2BC31C150008BB52 /* PresentationGraphicStreamHelper */ = {
 			isa = PBXGroup;
 			children = (
+				8FF53EE22BC9586A005EF4DD /* Utils.swift */,
 				8FD129C42BC6C37200FFA497 /* Models */,
-				8FB71B8D2BC31C150008BB52 /* main.swift */,
+				8FB71B8D2BC31C150008BB52 /* EntryPoint.swift */,
 			);
 			path = PresentationGraphicStreamHelper;
 			sourceTree = "<group>";
@@ -148,11 +151,12 @@
 			files = (
 				8F4876782BC865FA00ABB980 /* WindowDefinitionSegment.swift in Sources */,
 				8F48767A2BC86B6500ABB980 /* PaletteDefinitionSegment.swift in Sources */,
-				8FB71B8E2BC31C150008BB52 /* main.swift in Sources */,
+				8FB71B8E2BC31C150008BB52 /* EntryPoint.swift in Sources */,
 				8F4876762BC8433300ABB980 /* PresentationCompositionSegment.swift in Sources */,
 				8FD129C12BC6C20B00FFA497 /* AbstractSegment.swift in Sources */,
 				8F48767E2BC8846400ABB980 /* EndSegment.swift in Sources */,
 				8F48767C2BC879E300ABB980 /* ObjectDefinitionSegment.swift in Sources */,
+				8FF53EE32BC9586A005EF4DD /* Utils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
