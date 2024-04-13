@@ -58,7 +58,7 @@ struct EntryPoint {
             if let ods = segment as? ObjectDefinitionSegment {
                 
                 // Create a bitmap image from RLE object data.
-                let pixelMap: Utils.PixelMap = Utils.convert(fromRLE: ods.objectData, width: ods.width, height: ods.height)
+                let pixelMap: Utils.PixelMap = Utils.convert(fromRLE: ods.objectData)
                 
                 // Convert the pixel map to CI Image
                 let image: CIImage = Utils.convert(pixelMap: pixelMap)

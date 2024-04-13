@@ -78,14 +78,18 @@ public class Utils {
     ///
     /// - Parameters:
     ///     - fromRLE: RLE object data.
-    ///     - width : Image width in pixels.
-    ///     - height : Image height in pixels.
     ///
     /// - Returns: The decoded pixel map representation of RLE image.
-    static func convert(fromRLE: [UInt8], width: Int, height: Int) -> PixelMap {
+    static func convert(fromRLE: [UInt8]) -> PixelMap {
         
         // Index used to move
         var index: Int = 0
+        
+        // Components of pixelmap
+        var buffer: [UInt8] = []
+        var tempWidth: Int  = 0
+        var width: Int      = 0
+        var height: Int     = 0
         
         // As long as there is byte to read
         while (index < fromRLE.count - 1) {
@@ -97,11 +101,20 @@ public class Utils {
             // If this byte is NOT 0x00, then it's "One pixel in color C".
             if (currentByte != 0x00) {
                 
+                // Get the pixel color
+                let color: UInt8 = currentByte
+                
                 // Move the index
                 index = index + 1
                 
-                // TODO Remove this debug line
-                print("One pixel in color C : '\(currentByte)'")
+                // Update width count
+                tempWidth = tempWidth + 1
+                
+                // Add pixel to buffer
+                buffer.append(color)
+                buffer.append(color)
+                buffer.append(color)
+                buffer.append(0xFF)
                 
             } else {
                 
@@ -114,8 +127,13 @@ public class Utils {
                     // Move the index
                     index = index + 2
                     
-                    // TODO Remove this debug line
-                    print("End of line")
+                    // Update height count
+                    height = height + 1
+                    
+                    // Reset width counters
+                    width = tempWidth
+                    tempWidth = 0
+                    
                     
                 } else {
                     
@@ -134,8 +152,16 @@ public class Utils {
                         // Move the index
                         index = index + 2
                         
-                        // TODO Remove this debug line
-                        print("L pixels in color 0 (L between 1 and 63) : '\(pixels)'")
+                        // Update width count
+                        tempWidth = tempWidth + pixels
+                        
+                        // Add pixels to buffer
+                        for index in 0 ... pixels {
+                            buffer.append(0x00)
+                            buffer.append(0x00)
+                            buffer.append(0x00)
+                            buffer.append(0xFF)
+                        }
                         
                     // If discriminiator is 0x01, then it's "L pixels in color 0 (L between 64 and 16383)".
                     case 0x01 :
@@ -152,8 +178,16 @@ public class Utils {
                         // Move the index
                         index = index + 3
                         
-                        // TODO Remove this debug line
-                        print("L pixels in color 0 (L between 64 and 16383) : '\(pixels)'")
+                        // Update width count
+                        tempWidth = tempWidth + pixels
+                        
+                        // Add pixel to buffer
+                        for index in 0 ... pixels {
+                            buffer.append(0x00)
+                            buffer.append(0x00)
+                            buffer.append(0x00)
+                            buffer.append(0xFF)
+                        }
                         
                     // If discriminiator is 0x02, then it's "L pixels in color C (L between 3 and 63)".
                     case 0x02 :
@@ -162,13 +196,21 @@ public class Utils {
                         let pixels: Int = Int( nextByte & 0x3F )
                         
                         // Get color
-                        let color: Int  = Int( fromRLE[2 + index] )
+                        let color: UInt8  = fromRLE[2 + index]
                         
                         // Move the index
                         index = index + 3
                         
-                        // TODO Remove this debug line
-                        print("L pixels in color C (L between 3 and 63) : '\(pixels)' and '\(color)'")
+                        // Update width count
+                        tempWidth = tempWidth + pixels
+                        
+                        // Add pixel to buffer
+                        for index in 0 ... pixels {
+                            buffer.append(color)
+                            buffer.append(color)
+                            buffer.append(color)
+                            buffer.append(0xFF)
+                        }
                         
                     // If discriminiator is 0x03, then it's "L pixels in color C (L between 64 and 16383)".
                     case 0x03 :
@@ -183,13 +225,21 @@ public class Utils {
                         let pixels: Int = Int( convert(firstByte: firstPart, lastByte: lastPart) )
                         
                         // Get color
-                        let color: Int  = Int( fromRLE[3 + index] )
+                        let color: UInt8  = fromRLE[3 + index]
                         
                         // Move the index
                         index = index + 4
                         
-                        // TODO Remove this debug line
-                        print("L pixels in color C (L between 64 and 16383) : '\(pixels)' and '\(color)'")
+                        // Update width count
+                        tempWidth = tempWidth + pixels
+                        
+                        // Add pixel to buffer
+                        for index in 0 ... pixels {
+                            buffer.append(color)
+                            buffer.append(color)
+                            buffer.append(color)
+                            buffer.append(0xFF)
+                        }
                         
                     default :
                         print("We shouldn't be here")
@@ -199,13 +249,8 @@ public class Utils {
             }
         }
         
-        // PixelMap members
-        let buffer: [UInt8] = [ 0xFF, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0xFF,
-                                0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF,
-                                0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF ]
-        
         // Create the PixelMap
-        let pixelMap : PixelMap = PixelMap(width: 3, height: 3, buffer: buffer)
+        let pixelMap : PixelMap = PixelMap(width: width, height: height, buffer: buffer)
         
         // Return the PixelMap
         return pixelMap
