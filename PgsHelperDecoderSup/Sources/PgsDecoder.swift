@@ -1,79 +1,15 @@
-// GNU AFFERO GENERAL PUBLIC LICENSE
-// Version 3, 19 November 2007
 //
-// Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
-// Everyone is permitted to copy and distribute verbatim copies
-// of this license document, but changing it is not allowed.
-
+//  File.swift
+//  
 //
-//  EntryPoint.swift
-//  PresentationGraphicStreamHelper
-//
-//  Created by Yoann MOUGNIBAS on 07/04/2024.
+//  Created by Yoann MOUGNIBAS on 14/04/2024.
 //
 
 import Foundation
 import CoreImage
 
-/// I don't like standalone root level code.
-/// Let's add some useless code for feel good purpose.
-@main
-struct EntryPoint {
-    
-    /// Application entrypoint function.
-    static func main() {
-        
-        print("Reading and decoding PGS file ...")
-        let segments: [AbstractSegment] = makeSegments(filepath: "/Users/yoann/Documents/3-subs.sup")
-        print("Reading and decoding PGS file done !")
-        print()
-        
-        print("Creating bitmaps from RLE object data ...")
-        makeBitmaps(segments: segments)
-        print("Creating bitmaps from RLE object data done !")
-        print()
-
-        // We are done
-        exit(0)
-    }
-    
-    /// Make bitmaps from segments.
-    ///
-    /// - Parameters :
-    ///     - segments: Segments to make bitmaps from
-    static func makeBitmaps(segments: [AbstractSegment]) {
-        
-        // This variable will store the current subtitle identifier
-        var currentId: Int = -1
-        
-        // for each segments
-        for segment in segments {
-            
-            // PCS will store current subtitle ID
-            if let pcs = segment as? PresentationCompositionSegment {
-                currentId = pcs.compositionNumber
-            }
-            
-            // Only works with ODS
-            if let ods = segment as? ObjectDefinitionSegment {
-                
-                // Create a bitmap image from RLE object data.
-                let pixelMap: Utils.PixelMap = Utils.convert(fromRLE: ods.objectData)
-                
-                // Convert the pixel map to CI Image
-                let image: CIImage = Utils.convert(pixelMap: pixelMap)
-                
-                // TODO Remove this debug lines
-                do {
-                    let destination: String = "/Users/yoann/Documents/subs/" + String(currentId) + ".png"
-                    try Utils.write(image: image, destination: destination)
-                } catch {
-                    print("Something gone wrong")
-                    exit(-1)
-                }
-            }
-        }
-    }
+/// An utility class to decode PGS files.
+public class PgsDecoder {
     
     /// Make segments from a given PGS (sup) file
     ///
@@ -81,7 +17,7 @@ struct EntryPoint {
     ///     - filepath: The path to a PGS (sup) file.
     ///
     /// - Returns : An array of segments.
-    static func makeSegments(filepath: String) -> [AbstractSegment] {
+    public static func makeSegments(filepath: String) -> [AbstractSegment] {
         
         // Create an empty array.
         // It will grow automatically.
@@ -226,5 +162,43 @@ struct EntryPoint {
         
         // Return the segments
         return segments
+    }
+   
+    /// Make bitmaps from segments.
+    ///
+    /// - Parameters :
+    ///     - segments: Segments to make bitmaps from
+    public static func makeBitmaps(segments: [AbstractSegment]) {
+        
+        // This variable will store the current subtitle identifier
+        var currentId: Int = -1
+        
+        // for each segments
+        for segment in segments {
+            
+            // PCS will store current subtitle ID
+            if let pcs = segment as? PresentationCompositionSegment {
+                currentId = pcs.compositionNumber
+            }
+            
+            // Only works with ODS
+            if let ods = segment as? ObjectDefinitionSegment {
+                
+                // Create a bitmap image from RLE object data.
+                let pixelMap: Utils.PixelMap = Utils.convert(fromRLE: ods.objectData)
+                
+                // Convert the pixel map to CI Image
+                let image: CIImage = Utils.convert(pixelMap: pixelMap)
+                
+                // TODO Remove this debug lines
+                do {
+                    let destination: String = "/Users/yoann/Documents/subs/" + String(currentId) + ".png"
+                    try Utils.write(image: image, destination: destination)
+                } catch {
+                    print("Something gone wrong")
+                    exit(-1)
+                }
+            }
+        }
     }
 }
