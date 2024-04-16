@@ -7,6 +7,7 @@ let package = Package(
     name: "PgsHelperCli",
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.2.0"),
+        .package(path: "../PgsHelperCore")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -15,6 +16,7 @@ let package = Package(
             name: "PgsHelperCli",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
+                .product(name: "PgsHelperCore",  package: "PgsHelperCore")
             ]
         ),
     ]
