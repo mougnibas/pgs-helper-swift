@@ -16,7 +16,7 @@ let package = Package(
             name: "PgsHelperCli",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
-                .product(name: "PgsHelperCore",  package: "PgsHelperCore")
+                "PgsHelperCore"
             ]
         ),
     ]
