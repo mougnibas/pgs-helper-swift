@@ -5,6 +5,10 @@
 # MacOS stuff
 .DS_Store
 
+# Swift stuff
+.swiftpm/
+Package.resolved
+
 ## User settings
 xcuserdata/
 
