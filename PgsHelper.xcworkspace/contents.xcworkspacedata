@@ -8,12 +8,12 @@
       location = "group:README.md">
    </FileRef>
    <FileRef
-      location = "group:PgsHelperCli">
+      location = "group:PgsHelperDecoderSup">
    </FileRef>
    <FileRef
       location = "group:PgsHelperCore">
    </FileRef>
    <FileRef
-      location = "group:PgsHelperDecoderSup">
+      location = "group:PgsHelperCli">
    </FileRef>
 </Workspace>
