@@ -7,7 +7,35 @@
 
 import Foundation
 
+import PgsHelperDecoderSup
+
+/// Business app class.
 public class AppBusiness {
 
-    // TODO Write some code
+    /// PGS segments.
+    var segments : [AbstractSegment]
+
+    /// Initialize app business members.
+    public init() {
+
+        // Just reference an empty array.
+        segments = []
+    }
+
+    /// Internally decode a PGS file.
+    public func decodePgsFile(filepath: String) {
+
+        // Ask the PGS Decoder to decode the file.
+        segments = PgsDecoder.makeSegments(filepath: filepath)
+    }
+
+    /// Internally make bitmaps from RLE from decoded pgs file.
+    ///
+    /// 'decodePgsFile' must be called before.
+    public func makeBitmaps() {
+
+        // Ask the RLE Decoder to decode RLE pictures
+        // TODO Write an actual decoder ...
+        PgsDecoder.makeBitmaps(segments: segments)
+    }
 }

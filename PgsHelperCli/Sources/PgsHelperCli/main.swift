@@ -7,7 +7,7 @@
 
 import Foundation
 import ArgumentParser
-import PgsHelperDecoderSup
+import PgsHelperCore
 
 /// I don't like standalone root level code.
 /// Let's add some useless code for feel good purpose.
@@ -20,15 +20,18 @@ struct main: ParsableCommand {
         // TODO See Swift Argument Parser
         // https://swiftpackageindex.com/apple/swift-argument-parser/documentation
         
+        // Create an app instance
+        let appBusiness: AppBusiness = AppBusiness()
+
         // Decode PGS
         print("Reading and decoding PGS file ...")
-        let segments: [AbstractSegment] = PgsDecoder.makeSegments(filepath: "/Users/yoann/Documents/3-subs.sup")
+        appBusiness.decodePgsFile(filepath: "/Users/yoann/Documents/3-subs.sup")
         print("Reading and decoding PGS file done !")
         print()
-        
+
         // Decode RLE
         print("Creating bitmaps from RLE object data ...")
-        PgsDecoder.makeBitmaps(segments: segments)
+        appBusiness.makeBitmaps()
         print("Creating bitmaps from RLE object data done !")
         print()
     }
