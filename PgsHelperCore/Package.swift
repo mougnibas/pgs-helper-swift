@@ -13,6 +13,7 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../PgsHelperDecoderSup"),
+        .package(url: "https://github.com/realm/SwiftLint.git", from: "0.54.0"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -20,7 +21,8 @@ let package = Package(
         .target(
             name: "PgsHelperCore", 
             dependencies: [ "PgsHelperDecoderSup" ],
-            path: "Sources"),
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
+        ),
         .testTarget(
             name: "PgsHelperCoreTests",
             dependencies: ["PgsHelperCore"]),
