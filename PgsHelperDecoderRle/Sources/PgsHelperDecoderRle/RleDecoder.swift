@@ -17,7 +17,7 @@ public class RleDecoder {
     ///     - fromRLE: RLE object data.
     ///
     /// - Returns: The decoded pixel map representation of RLE image.
-    public static func decode(fromRLE: [UInt8]) -> PixmapPicture {
+    public static func decode( _ fromRLE: [UInt8]) -> PixmapPicture {
         
         // Index used to move
         var index: Int = 0
