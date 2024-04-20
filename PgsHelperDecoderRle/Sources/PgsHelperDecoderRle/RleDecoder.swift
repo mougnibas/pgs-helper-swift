@@ -93,7 +93,7 @@ public class RleDecoder {
                         tempWidth = tempWidth + pixels
                         
                         // Add pixels to buffer
-                        for index in 0 ... pixels {
+                        for index in 1 ... pixels {
                             buffer.append(0x00)
                             buffer.append(0x00)
                             buffer.append(0x00)
@@ -119,7 +119,7 @@ public class RleDecoder {
                         tempWidth = tempWidth + pixels
                         
                         // Add pixel to buffer
-                        for index in 0 ... pixels {
+                        for index in 1 ... pixels {
                             buffer.append(0x00)
                             buffer.append(0x00)
                             buffer.append(0x00)
@@ -142,7 +142,7 @@ public class RleDecoder {
                         tempWidth = tempWidth + pixels
                         
                         // Add pixel to buffer
-                        for index in 0 ... pixels {
+                        for index in 1 ... pixels {
                             buffer.append(color)
                             buffer.append(color)
                             buffer.append(color)
@@ -171,7 +171,7 @@ public class RleDecoder {
                         tempWidth = tempWidth + pixels
                         
                         // Add pixel to buffer
-                        for index in 0 ... pixels {
+                        for index in 1 ... pixels {
                             buffer.append(color)
                             buffer.append(color)
                             buffer.append(color)

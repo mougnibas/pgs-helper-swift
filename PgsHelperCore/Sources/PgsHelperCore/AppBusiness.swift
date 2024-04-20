@@ -53,7 +53,7 @@ public class AppBusiness {
 
                 // Create a bitmap image from RLE object data.
                 // Ask the RLE Decoder to decode RLE pictures
-                let pixmap: PixmapPicture = RleDecoder.decode(fromRLE: ods.objectData)
+                let pixmap: PixmapPicture = RleDecoder.decode(ods.objectData)
 
                 // Convert the pixel map to CI Image
                 let image: CIImage = Utils.convert(pixmap)
