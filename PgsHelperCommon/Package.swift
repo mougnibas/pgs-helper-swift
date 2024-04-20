@@ -4,31 +4,20 @@
 import PackageDescription
 
 let package = Package(
-    name: "PgsHelperCore",
+    name: "PgsHelperCommon",
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "PgsHelperCore",
-            targets: ["PgsHelperCore"]),
-    ],
-    dependencies: [
-        .package(path: "../PgsHelperDecoderSup"),
-        .package(path: "../PgsHelperDecoderRle"),
-        .package(path: "../PgsHelperCommon"),
+            name: "PgsHelperCommon",
+            targets: ["PgsHelperCommon"]),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "PgsHelperCore", 
-            dependencies: [
-                "PgsHelperDecoderSup",
-                "PgsHelperDecoderRle",
-                "PgsHelperCommon",
-            ]
-        ),
+            name: "PgsHelperCommon"),
         .testTarget(
-            name: "PgsHelperCoreTests",
-            dependencies: ["PgsHelperCore"]),
+            name: "PgsHelperCommonTests",
+            dependencies: ["PgsHelperCommon"]),
     ]
 )

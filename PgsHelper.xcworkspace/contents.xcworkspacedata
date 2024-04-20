@@ -8,7 +8,13 @@
       location = "group:README.md">
    </FileRef>
    <FileRef
+      location = "group:PgsHelperCommon">
+   </FileRef>
+   <FileRef
       location = "group:PgsHelperDecoderSup">
+   </FileRef>
+   <FileRef
+      location = "group:PgsHelperDecoderRle">
    </FileRef>
    <FileRef
       location = "group:PgsHelperCore">
