@@ -11,6 +11,9 @@
       location = "group:PgsHelperDecoderSup">
    </FileRef>
    <FileRef
+      location = "group:PgsHelperDecoderRle">
+   </FileRef>
+   <FileRef
       location = "group:PgsHelperCore">
    </FileRef>
    <FileRef
