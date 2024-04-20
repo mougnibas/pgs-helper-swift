@@ -16,13 +16,17 @@ import PgsHelperCommon
 public class AppBusiness {
 
     /// PGS segments.
-    var segments : [AbstractSegment]
+    var segments: [AbstractSegment]
+    
+    /// Pixel map pictures.
+    var pixmaps: [PixmapPicture]
 
     /// Initialize app business members.
     public init() {
 
         // Just reference an empty array.
         segments = []
+        pixmaps = []
     }
 
     /// Internally decode a PGS file.
@@ -37,16 +41,8 @@ public class AppBusiness {
     /// 'decodePgsFile' must be called before.
     public func makeBitmaps() {
 
-        // This variable will store the current subtitle identifier
-        var currentId: Int = -1
-
         // for each segments
         for segment in segments {
-
-            // PCS will store current subtitle ID
-            if let pcs = segment as? PresentationCompositionSegment {
-                currentId = pcs.compositionNumber
-            }
 
             // Only works with ODS
             if let ods = segment as? ObjectDefinitionSegment {
@@ -54,18 +50,33 @@ public class AppBusiness {
                 // Create a bitmap image from RLE object data.
                 // Ask the RLE Decoder to decode RLE pictures
                 let pixmap: PixmapPicture = RleDecoder.decode(ods.objectData)
-
-                // Convert the pixel map to CI Image
-                let image: CIImage = Utils.convert(pixmap)
-
-                // TODO Remove this debug lines
-                do {
-                    let destination: String = "/Users/yoann/Documents/subs/" + String(currentId) + ".png"
-                    try Utils.write(image: image, destination: destination)
-                } catch {
-                    print("Something gone wrong")
-                    exit(-1)
-                }
+                
+                // Add the current pixmap to pixmaps
+                pixmaps.append(pixmap)
+            }
+        }
+    }
+    
+    public func makeBitmapsToText() {
+        
+        // This variable will store the current subtitle identifier
+        var currentId: Int = -1
+        
+        // Iterate over pixmaps
+        for pixmap in pixmaps {
+            
+            currentId += 1
+            
+            // Convert the pixel map to CI Image
+            let image: CIImage = Utils.convert(pixmap)
+            
+            // TODO Remove this debug lines
+            do {
+                let destination: String = "/Users/yoann/Documents/subs/" + String(currentId) + ".png"
+                try Utils.write(image: image, destination: destination)
+            } catch {
+                print("Something gone wrong")
+                exit(-1)
             }
         }
     }

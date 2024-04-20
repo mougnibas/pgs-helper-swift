@@ -34,5 +34,11 @@ struct main: ParsableCommand {
         appBusiness.makeBitmaps()
         print("Creating bitmaps from RLE object data done !")
         print()
+        
+        // Use Apple AI
+        print("Bitmap to text using Apple AI ...")
+        appBusiness.makeBitmapsToText()
+        print("Bitmap to text using Apple AI done !")
+        print()
     }
 }
