@@ -8,6 +8,7 @@
 import Foundation
 import CoreImage
 
+import PgsHelperBitmapToText
 import PgsHelperDecoderSup
 import PgsHelperDecoderRle
 import PgsHelperCommon
@@ -60,12 +61,16 @@ public class AppBusiness {
     public func makeBitmapsToText() {
         
         // This variable will store the current subtitle identifier
-        var currentId: Int = -1
+        var currentId: Int = 0
         
         // Iterate over pixmaps
         for pixmap in pixmaps {
             
             currentId += 1
+            
+            // Use bitmap to text component
+            let text: String = BitmapToText.recognizeText(image: pixmap)
+            print("recognized ( \(currentId) / \(pixmaps.endIndex) ) : '\(text)'")
             
             // Convert the pixel map to CI Image
             let image: CIImage = Utils.convert(pixmap)
