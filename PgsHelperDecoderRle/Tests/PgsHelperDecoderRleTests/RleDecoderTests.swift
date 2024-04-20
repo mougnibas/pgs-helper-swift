@@ -63,7 +63,7 @@ final class RleDecoderTests: XCTestCase {
     }
     
     /// Decode a RLE object 2x1 black, then the result should be 2px width.
-    func testDecodeOnePixelPerOnePixelBlackIsNotTwoPixelWidth() {
+    func testDecodeOnePixelPerOnePixelBlackIsTwoPixelWidth() {
 
         // Arrange
         let expected: PixmapPicture = PixmapPicture(width: 2, height: 1, buffer: [
@@ -90,7 +90,7 @@ final class RleDecoderTests: XCTestCase {
     }
 
     /// Decode a RLE object 2x1 black, then the result should be 2px height.
-    func testDecodeOnePixelPerOnePixelBlackIsNotTwoPixelHeight() {
+    func testDecodeOnePixelPerOnePixelBlackIsTwoPixelHeight() {
 
         // Arrange
         let expected: PixmapPicture = PixmapPicture(width: 1, height: 2, buffer: [
