@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreImage
+import PgsHelperCommon
 
 /// An utility class to decode PGS files.
 public class PgsDecoder {
@@ -162,43 +163,5 @@ public class PgsDecoder {
         
         // Return the segments
         return segments
-    }
-   
-    /// Make bitmaps from segments.
-    ///
-    /// - Parameters :
-    ///     - segments: Segments to make bitmaps from
-    public static func makeBitmaps(segments: [AbstractSegment]) {
-        
-        // This variable will store the current subtitle identifier
-        var currentId: Int = -1
-        
-        // for each segments
-        for segment in segments {
-            
-            // PCS will store current subtitle ID
-            if let pcs = segment as? PresentationCompositionSegment {
-                currentId = pcs.compositionNumber
-            }
-            
-            // Only works with ODS
-            if let ods = segment as? ObjectDefinitionSegment {
-                
-                // Create a bitmap image from RLE object data.
-                let pixelMap: Utils.PixelMap = Utils.convert(fromRLE: ods.objectData)
-                
-                // Convert the pixel map to CI Image
-                let image: CIImage = Utils.convert(pixelMap: pixelMap)
-                
-                // TODO Remove this debug lines
-                do {
-                    let destination: String = "/Users/yoann/Documents/subs/" + String(currentId) + ".png"
-                    try Utils.write(image: image, destination: destination)
-                } catch {
-                    print("Something gone wrong")
-                    exit(-1)
-                }
-            }
-        }
     }
 }

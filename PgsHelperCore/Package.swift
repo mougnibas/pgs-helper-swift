@@ -14,6 +14,7 @@ let package = Package(
     dependencies: [
         .package(path: "../PgsHelperDecoderSup"),
         .package(path: "../PgsHelperDecoderRle"),
+        .package(path: "../PgsHelperCommon"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -23,8 +24,9 @@ let package = Package(
             dependencies: [
                 "PgsHelperDecoderSup",
                 "PgsHelperDecoderRle",
-            ],
-            path: "Sources"),
+                "PgsHelperCommon",
+            ]
+        ),
         .testTarget(
             name: "PgsHelperCoreTests",
             dependencies: ["PgsHelperCore"]),
