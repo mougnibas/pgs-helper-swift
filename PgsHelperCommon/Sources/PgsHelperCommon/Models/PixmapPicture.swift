@@ -10,13 +10,13 @@ import Foundation
 public struct PixmapPicture {
 
     /// Width in pixels.
-    let width: Int
+    public let width: Int
 
     /// Height in pixels.
-    let height: Int
+    public let height: Int
 
     /// A RGBA buffer (Red, Green, Blue, Alpha components). One byte per component.
-    let buffer: [UInt8]
+    public let buffer: [UInt8]
 
     public init(width: Int, height: Int, buffer: [UInt8]) {
         self.width = width

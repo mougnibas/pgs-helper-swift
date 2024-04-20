@@ -11,7 +11,7 @@ public class RleDecoder {
 
     /// Convert from RLE object data to pixel map.
     ///
-    /// // See https://developer.apple.com/documentation/coregraphics/cgimage/1455149-init
+    /// See https://patents.google.com/patent/US7912305
     ///
     /// - Parameters:
     ///     - fromRLE: RLE object data.

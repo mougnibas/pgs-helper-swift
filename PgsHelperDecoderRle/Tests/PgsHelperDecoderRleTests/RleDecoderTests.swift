@@ -16,17 +16,106 @@ import PgsHelperCommon
 
 /// Unit test class of RleDecoder.
 final class RleDecoderTests: XCTestCase {
-    
-    /// Decode a 1x1 RLE object.
-    func testDecode1x1() {
-        
+
+    /// Decode a RLE object 1x1 black, then the result should be 1px width.
+    func testDecodeOnePixelPerOnePixelBlackIsOnePixelWidth() {
+
         // Arrange
-        let fromRLE: [UInt8] = []
-        
+        let expected: PixmapPicture = PixmapPicture(width: 1, height: 1, buffer: [
+            0b11111111, 0b11111111, 0b11111111, 0b11111111
+        ])
+        let fromRLE: [UInt8] = [
+
+            // One pixel in color C
+            0b11111111,
+
+            // End of line
+            0b00000000, 0b00000000
+        ]
+
         // Act
-        let pixmapPicture: PixmapPicture = RleDecoder.decode(fromRLE)
-        
+        let actual: PixmapPicture = RleDecoder.decode(fromRLE)
+
         // Assert
-        XCTAssertTrue(false)
+        XCTAssertEqual(expected.width, actual.width, "I should have 1 pixel of width")
+    }
+
+    /// Decode a RLE object 1x1 black, then the result should be 1px height.
+    func testDecodeOnePixelPerOnePixelBlackIsOnePixelHeight() {
+
+        // Arrange
+        let expected: PixmapPicture = PixmapPicture(width: 1, height: 1, buffer: [
+            0b11111111, 0b11111111, 0b11111111, 0b11111111
+        ])
+        let fromRLE: [UInt8] = [
+
+            // One pixel in color C
+            0b11111111,
+
+            // End of line
+            0b00000000, 0b00000000
+
+        // Act
+        let actual: PixmapPicture = RleDecoder.decode(fromRLE)
+
+        // Assert
+        XCTAssertEqual(expected.height, actual.height, "I should have 1 pixel of height")
+    }
+    
+    /// Decode a RLE object 2x1 black, then the result should be 2px width.
+    func testDecodeOnePixelPerOnePixelBlackIsNotTwoPixelWidth() {
+
+        // Arrange
+        let expected: PixmapPicture = PixmapPicture(width: 2, height: 1, buffer: [
+            0b11111111, 0b11111111, 0b11111111, 0b11111111,
+            0b11111111, 0b11111111, 0b11111111, 0b11111111,
+        ])
+        let fromRLE: [UInt8] = [
+
+            // One pixel in color C
+            0b11111111,
+
+            // One pixel in color C
+            0b11111111,
+
+            // End of line
+            0b00000000, 0b00000000
+        ]
+
+        // Act
+        let actual: PixmapPicture = RleDecoder.decode(fromRLE)
+
+        // Assert
+        XCTAssertEqual(expected.width, actual.width, "I should have 2 pixel of width")
+    }
+
+    /// Decode a RLE object 2x1 black, then the result should be 2px height.
+    func testDecodeOnePixelPerOnePixelBlackIsNotTwoPixelHeight() {
+
+        // Arrange
+        let expected: PixmapPicture = PixmapPicture(width: 1, height: 2, buffer: [
+            0b11111111, 0b11111111, 0b11111111, 0b11111111,
+            0b11111111, 0b11111111, 0b11111111, 0b11111111,
+        ])
+        let fromRLE: [UInt8] = [
+
+            // One pixel in color C
+            0b11111111,
+
+            // End of line
+            0b00000000, 0b00000000,
+
+            // One pixel in color C
+            0b11111111,
+
+            // End of line
+            0b00000000, 0b00000000
+        ]
+
+        // Act
+        let actual: PixmapPicture = RleDecoder.decode(fromRLE)
+
+        // Assert
+        XCTAssertEqual(expected.height, actual.height, "I should have 2 pixel of height")
     }
 }
