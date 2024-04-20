@@ -39,6 +39,7 @@ public class RleDecoder {
             if (currentByte != 0x00) {
                 
                 // Get the pixel color
+                // TODO Transcode the color from YUV plane to RGB plane.
                 let color: UInt8 = currentByte
                 
                 // Move the index
@@ -133,6 +134,7 @@ public class RleDecoder {
                         let pixels: Int = Int( nextByte & 0x3F )
                         
                         // Get color
+                        // TODO Transcode the color from YUV plane to RGB plane.
                         let color: UInt8  = fromRLE[2 + index]
                         
                         // Move the index
@@ -162,6 +164,7 @@ public class RleDecoder {
                         let pixels: Int = Int( Utils.convert(firstByte: firstPart, lastByte: lastPart) )
                         
                         // Get color
+                        // TODO Transcode the color from YUV plane to RGB plane.
                         let color: UInt8  = fromRLE[3 + index]
                         
                         // Move the index
