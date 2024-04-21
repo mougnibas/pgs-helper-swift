@@ -4,36 +4,31 @@
 import PackageDescription
 
 let package = Package(
-    name: "PgsHelperCore",
+    name: "PgsHelperBitmapToText",
     platforms: [
         .macOS(.v12)
     ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "PgsHelperCore",
-            targets: ["PgsHelperCore"]),
+            name: "PgsHelperBitmapToText",
+            targets: ["PgsHelperBitmapToText"]
+        ),
     ],
     dependencies: [
-        .package(path: "../PgsHelperBitmapToText"),
-        .package(path: "../PgsHelperDecoderSup"),
-        .package(path: "../PgsHelperDecoderRle"),
         .package(path: "../PgsHelperCommon"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "PgsHelperCore", 
+            name: "PgsHelperBitmapToText",
             dependencies: [
-                "PgsHelperBitmapToText",
-                "PgsHelperDecoderSup",
-                "PgsHelperDecoderRle",
                 "PgsHelperCommon",
             ]
         ),
         .testTarget(
-            name: "PgsHelperCoreTests",
-            dependencies: ["PgsHelperCore"]),
+            name: "PgsHelperBitmapToTextTests",
+            dependencies: ["PgsHelperBitmapToText"]),
     ]
 )

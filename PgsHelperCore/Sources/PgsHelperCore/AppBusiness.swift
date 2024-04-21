@@ -8,6 +8,7 @@
 import Foundation
 import CoreImage
 
+import PgsHelperBitmapToText
 import PgsHelperDecoderSup
 import PgsHelperDecoderRle
 import PgsHelperCommon
@@ -16,13 +17,27 @@ import PgsHelperCommon
 public class AppBusiness {
 
     /// PGS segments.
-    var segments : [AbstractSegment]
+    var segments: [AbstractSegment]
+    
+    /// Pixel map pictures.
+    var pixmaps: [PixmapPicture]
 
     /// Initialize app business members.
     public init() {
 
         // Just reference an empty array.
         segments = []
+        pixmaps = []
+    }
+    
+    /// Return the supported recognized languages.
+    public func supportedLanguages() -> [String] {
+        
+        // Ask for supported languages
+        let supportedLanguages: [String] = BitmapToText.supportedLanguages()
+        
+        // Return the result
+        return supportedLanguages
     }
 
     /// Internally decode a PGS file.
@@ -37,16 +52,8 @@ public class AppBusiness {
     /// 'decodePgsFile' must be called before.
     public func makeBitmaps() {
 
-        // This variable will store the current subtitle identifier
-        var currentId: Int = -1
-
         // for each segments
         for segment in segments {
-
-            // PCS will store current subtitle ID
-            if let pcs = segment as? PresentationCompositionSegment {
-                currentId = pcs.compositionNumber
-            }
 
             // Only works with ODS
             if let ods = segment as? ObjectDefinitionSegment {
@@ -54,19 +61,44 @@ public class AppBusiness {
                 // Create a bitmap image from RLE object data.
                 // Ask the RLE Decoder to decode RLE pictures
                 let pixmap: PixmapPicture = RleDecoder.decode(ods.objectData)
-
-                // Convert the pixel map to CI Image
-                let image: CIImage = Utils.convert(pixmap)
-
-                // TODO Remove this debug lines
-                do {
-                    let destination: String = "/Users/yoann/Documents/subs/" + String(currentId) + ".png"
-                    try Utils.write(image: image, destination: destination)
-                } catch {
-                    print("Something gone wrong")
-                    exit(-1)
-                }
+                
+                // Add the current pixmap to pixmaps
+                pixmaps.append(pixmap)
             }
+        }
+    }
+    
+    /// Use machine learning to recognize text from bitmap.
+    public func recognizeTextFromBitmap(language: String = "en-US") {
+        
+        // This variable will store the current subtitle identifier
+        var id: Int = 0
+        
+        // Iterate over pixmaps
+        for pixmap in pixmaps {
+            
+            // Increment counter
+            id += 1
+            
+            // Use bitmap to text component
+            let lines: [String] = BitmapToText.recognizeText(image: pixmap, language: language)
+            
+            // TODO Remove this debug lines
+            print("Subtitle \(id) / \(pixmaps.count)")
+            for line: String in lines {
+                print(line)
+            }
+            let image: CIImage = Utils.convert(pixmap)
+            do {
+                let destination: String = "/Users/yoann/Documents/subs/" + String(id) + ".png"
+                try Utils.write(image: image, destination: destination)
+                print("Writing to '\(destination)'")
+            } catch {
+                print("Something gone wrong")
+                exit(-1)
+            }
+            print()
+            
         }
     }
 }
