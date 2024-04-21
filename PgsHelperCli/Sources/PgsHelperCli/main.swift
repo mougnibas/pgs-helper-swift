@@ -36,9 +36,9 @@ struct main: ParsableCommand {
         print()
         
         // Use Apple AI
-        print("Bitmap to text using Apple AI ...")
-        appBusiness.makeBitmapsToText()
-        print("Bitmap to text using Apple AI done !")
+        print("Recognize text from bitmap using Apple AI ...")
+        appBusiness.recognizeTextFromBitmap()
+        print("Recognize text from bitmap using Apple AI done !")
         print()
     }
 }

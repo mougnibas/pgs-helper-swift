@@ -17,7 +17,11 @@ import PgsHelperCommon
 /// See https://developer.apple.com/documentation/vision/recognizing_text_in_images
 public class BitmapToText {
     
-    public static func recognizeText(image: PixmapPicture) -> String {
+    /// Recognize text from an image.
+    ///
+    /// - Parameter : image : The  image
+    /// - Returns : An array of String.
+    public static func recognizeText(image: PixmapPicture) -> [String] {
         
         // Get the CGImage on which to perform requests.
         let cgImage: CGImage = Utils.convert(image)
@@ -26,7 +30,7 @@ public class BitmapToText {
         let requestHandler = VNImageRequestHandler(cgImage: cgImage)
         
         // Create a new request to recognize text.
-        let request = VNRecognizeTextRequest(completionHandler: recognizeTextHandler)
+        let request = VNRecognizeTextRequest()
 
         do {
             // Perform the text-recognition request.
@@ -35,20 +39,23 @@ public class BitmapToText {
             print("Unable to perform the requests: \(error).")
         }
         
-        return "TODO"
-    }
-    
-    static func recognizeTextHandler(request: VNRequest, error: Error?) {
+        // Prepare for results
+        var results: [String] = []
         
-        guard let observations =
-                request.results as? [VNRecognizedTextObservation] else {
-            return
-        }
-        let recognizedStrings = observations.compactMap { observation in
-            // Return the string of the top VNRecognizedText instance.
-            return observation.topCandidates(1).first?.string
+        // Iterate over results
+        for result: VNRecognizedTextObservation in request.results! {
+            
+            // At this point, we could pick more candidates.
+            // However, first candidate will always be the best guess (maximum confidence score).
+            let maxCandidateCount: Int = 1
+            let candidate: VNRecognizedText = result.topCandidates(maxCandidateCount)[0]
+            let text: String = candidate.string
+            
+            // Add the candidate to the results
+            results.append(text)
         }
         
-        print("omg : '\(recognizedStrings)'");
+        // Return the results
+        return results
     }
 }

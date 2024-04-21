@@ -58,26 +58,32 @@ public class AppBusiness {
         }
     }
     
-    public func makeBitmapsToText() {
+    /// Use machine learning to recognize text from bitmap.
+    public func recognizeTextFromBitmap() {
         
         // This variable will store the current subtitle identifier
-        var currentId: Int = 0
+        var id: Int = 0
         
         // Iterate over pixmaps
         for pixmap in pixmaps {
             
-            currentId += 1
+            // Increment counter
+            id += 1
             
             // Use bitmap to text component
-            let text: String = BitmapToText.recognizeText(image: pixmap)
-            print("recognized ( \(currentId) / \(pixmaps.endIndex) ) : '\(text)'")
+            let lines: [String] = BitmapToText.recognizeText(image: pixmap)
             
-            // Convert the pixel map to CI Image
-            let image: CIImage = Utils.convert(pixmap)
+            // TODO Remove this debug line
+            print("Subtitle \(id) / \(pixmaps.count)")
+            for line: String in lines {
+                print(line)
+            }
+            print()
             
             // TODO Remove this debug lines
+            let image: CIImage = Utils.convert(pixmap)
             do {
-                let destination: String = "/Users/yoann/Documents/subs/" + String(currentId) + ".png"
+                let destination: String = "/Users/yoann/Documents/subs/" + String(id) + ".png"
                 try Utils.write(image: image, destination: destination)
             } catch {
                 print("Something gone wrong")
