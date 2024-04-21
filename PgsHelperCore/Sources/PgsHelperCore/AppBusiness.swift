@@ -21,6 +21,9 @@ public class AppBusiness {
     
     /// Pixel map pictures.
     var pixmaps: [PixmapPicture]
+    
+    // Array of subtitles.
+    var subtitles: [ [String] ]
 
     /// Initialize app business members.
     public init() {
@@ -28,6 +31,7 @@ public class AppBusiness {
         // Just reference an empty array.
         segments = []
         pixmaps = []
+        subtitles = []
     }
     
     /// Return the supported recognized languages.
@@ -83,6 +87,9 @@ public class AppBusiness {
             // Use bitmap to text component
             let lines: [String] = BitmapToText.recognizeText(image: pixmap, language: language)
             
+            // Add the lines to the subtitles
+            subtitles.append(lines)
+            
             // TODO Remove this debug lines
             print("Subtitle \(id) / \(pixmaps.count)")
             for line: String in lines {
@@ -100,5 +107,20 @@ public class AppBusiness {
             print()
             
         }
+    }
+    
+    /// Make Srt from previously called steps.
+    public func makeSrt(filepath: String) {
+        
+        // TODO A dumb way to build the subtitles
+        var dumbWay: [String] = []
+        for subtitle: [String] in subtitles {
+            for line: String in subtitle {
+                dumbWay.append(line)
+            }
+        }
+        
+        // Write subtitles
+        Utils.write(lines: dumbWay, destination: filepath)
     }
 }

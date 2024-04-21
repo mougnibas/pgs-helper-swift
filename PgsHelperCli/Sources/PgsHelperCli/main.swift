@@ -55,5 +55,12 @@ struct main: ParsableCommand {
         appBusiness.recognizeTextFromBitmap()
         print("Recognize text from bitmap using Apple AI done !")
         print()
+        
+        // Make SRT
+        print("Creating SRT file ...")
+        appBusiness.makeSrt(filepath: output)
+        print("Creating SRT file done !")
+        print()
+        
     }
 }

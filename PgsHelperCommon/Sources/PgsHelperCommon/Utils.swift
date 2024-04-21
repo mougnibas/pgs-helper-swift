@@ -132,4 +132,26 @@ public class Utils {
         let url: URL = URL(fileURLWithPath: destination)
         try imageData.write(to: url)
     }
+    
+    /// Write lines to destination.
+    public static func write(lines: [String], destination: String) {
+        
+        // Make a single big String
+        var bigLines: String = ""
+        for line: String in lines {
+            bigLines.append(line)
+            bigLines.append("\n")
+        }
+        
+        // URL to write lines
+        let url: URL = URL(fileURLWithPath: destination)
+        
+        // Try to write the file.
+        do {
+            try ( bigLines.write(to: url, atomically: false, encoding: String.Encoding.utf8) )
+        } catch {
+            print("something go wrong")
+            exit(-1)
+        }
+    }
 }
