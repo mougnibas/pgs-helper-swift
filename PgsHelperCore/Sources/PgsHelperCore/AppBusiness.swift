@@ -29,6 +29,16 @@ public class AppBusiness {
         segments = []
         pixmaps = []
     }
+    
+    /// Return the supported recognized languages.
+    public func supportedLanguages() -> [String] {
+        
+        // Ask for supported languages
+        let supportedLanguages: [String] = BitmapToText.supportedLanguages()
+        
+        // Return the result
+        return supportedLanguages
+    }
 
     /// Internally decode a PGS file.
     public func decodePgsFile(filepath: String) {
@@ -59,7 +69,7 @@ public class AppBusiness {
     }
     
     /// Use machine learning to recognize text from bitmap.
-    public func recognizeTextFromBitmap() {
+    public func recognizeTextFromBitmap(language: String = "en-US") {
         
         // This variable will store the current subtitle identifier
         var id: Int = 0
@@ -71,24 +81,24 @@ public class AppBusiness {
             id += 1
             
             // Use bitmap to text component
-            let lines: [String] = BitmapToText.recognizeText(image: pixmap)
+            let lines: [String] = BitmapToText.recognizeText(image: pixmap, language: language)
             
-            // TODO Remove this debug line
+            // TODO Remove this debug lines
             print("Subtitle \(id) / \(pixmaps.count)")
             for line: String in lines {
                 print(line)
             }
-            print()
-            
-            // TODO Remove this debug lines
             let image: CIImage = Utils.convert(pixmap)
             do {
                 let destination: String = "/Users/yoann/Documents/subs/" + String(id) + ".png"
                 try Utils.write(image: image, destination: destination)
+                print("Writing to '\(destination)'")
             } catch {
                 print("Something gone wrong")
                 exit(-1)
             }
+            print()
+            
         }
     }
 }

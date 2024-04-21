@@ -19,21 +19,27 @@ public class BitmapToText {
     
     /// Recognize text from an image.
     ///
-    /// - Parameter : image : The  image
+    /// - Parameters :
+    ///     - image : The  image
+    ///     - language : Language to use. If omited, default will be "en-US".
+    ///
     /// - Returns : An array of String.
-    public static func recognizeText(image: PixmapPicture) -> [String] {
+    public static func recognizeText(image: PixmapPicture, language: String = "en-US") -> [String] {
         
         // Get the CGImage on which to perform requests.
         let cgImage: CGImage = Utils.convert(image)
         
         // Create a new image-request handler.
-        let requestHandler = VNImageRequestHandler(cgImage: cgImage)
+        let requestHandler: VNImageRequestHandler = VNImageRequestHandler(cgImage: cgImage)
         
         // Create a new request to recognize text.
-        let request = VNRecognizeTextRequest()
+        let request: VNRecognizeTextRequest = VNRecognizeTextRequest()
+        
+        // Set the prefered language
+        request.recognitionLanguages = [ language ]
 
+        // Perform the text-recognition request.
         do {
-            // Perform the text-recognition request.
             try requestHandler.perform([request])
         } catch {
             print("Unable to perform the requests: \(error).")
@@ -57,5 +63,16 @@ public class BitmapToText {
         
         // Return the results
         return results
+    }
+    
+    /// Return the supported recognized languages.
+    public static func supportedLanguages() -> [String] {
+
+        do {
+            let languages = try VNRecognizeTextRequest().supportedRecognitionLanguages()
+            return languages
+        } catch {
+            return [ "" ]
+        }
     }
 }

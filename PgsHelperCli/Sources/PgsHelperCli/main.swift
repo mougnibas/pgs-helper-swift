@@ -14,18 +14,33 @@ import PgsHelperCore
 @main
 struct main: ParsableCommand {
     
+    /// Input file path.
+    @Argument(help: "Input file to read. Must be a PGS/SUP file.")
+    var input: String
+    
+    /// Output file path.
+    @Argument(help: "Output file to write. Will be a SRT file.")
+    var output: String
+    
+    /// Language to use for text recognization.
+    @Option(help: "The language to use. if omited, default will be 'en-US'. Common values are 'en-US', 'fr-FR', ' it-IT', 'de-DE', 'es-ES', 'pt-BR', 'zh-Hans', 'zh-Hant', 'yue-Hans', 'yue-Hant', 'ko-KR', 'ja-JP', 'ru-RU', 'uk-UA', 'th-TH' and 'vi-VT' ")
+    var language: String? = nil
     
     mutating func run() throws {
         
-        // TODO See Swift Argument Parser
-        // https://swiftpackageindex.com/apple/swift-argument-parser/documentation
-        
         // Create an app instance
         let appBusiness: AppBusiness = AppBusiness()
+        
+        // Usage languages
+        print("Supported languages :")
+        for language: String in appBusiness.supportedLanguages() {
+            print(" - \(language)")
+        }
+        print()
 
         // Decode PGS
         print("Reading and decoding PGS file ...")
-        appBusiness.decodePgsFile(filepath: "/Users/yoann/Documents/3-subs.sup")
+        appBusiness.decodePgsFile(filepath: input)
         print("Reading and decoding PGS file done !")
         print()
 

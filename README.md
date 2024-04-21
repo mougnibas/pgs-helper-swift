@@ -3,6 +3,10 @@ A swift project to work with PGS subtitle format commonly found on bluray discs.
 
 Main usage is decoding PGS (metadata and bitmap pictures), then use Apple machine learning to recognize text in images to produce SubRip (SRT) files.
 
+# Usage
+
+TODO
+
 # Dev notes
 
 ## Xcode integration
@@ -50,6 +54,8 @@ usage to Apple platform only (iOS 11.0+, macOS 10.13+, Mac Catalyst 13.0+, tvOS 
 ### [Swift Programming Language](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/)
 
 ### [Swift package manager](https://www.swift.org/documentation/package-manager/)
+
+### [Swift Argument Parser](https://swiftpackageindex.com/apple/swift-argument-parser/documentation)
 
 ## [Apple Technologies](https://developer.apple.com/documentation/technologies)
 
