@@ -57,7 +57,7 @@ public class AppBusiness {
     public func makeBitmaps() {
 
         // for each segments
-        for segment in segments {
+        for segment: AbstractSegment in segments {
 
             // Only works with ODS
             if let ods = segment as? ObjectDefinitionSegment {
@@ -91,6 +91,7 @@ public class AppBusiness {
             subtitles.append(lines)
             
             // TODO Remove this debug lines
+            /*
             print("Subtitle \(id) / \(pixmaps.count)")
             for line: String in lines {
                 print(line)
@@ -105,6 +106,7 @@ public class AppBusiness {
                 exit(-1)
             }
             print()
+             */
             
         }
     }
@@ -112,15 +114,69 @@ public class AppBusiness {
     /// Make Srt from previously called steps.
     public func makeSrt(filepath: String) {
         
-        // TODO A dumb way to build the subtitles
-        var dumbWay: [String] = []
-        for subtitle: [String] in subtitles {
-            for line: String in subtitle {
-                dumbWay.append(line)
+        // TODO This is one of my most terrible code ever...
+        // TODO Make a SRT model and business logic code.
+        
+        // SRT lines
+        var lines: [String] = []
+        
+        // Get start and end times
+        var starts: [Float] = []
+        var ends: [Float] = []
+        var start: Float = 0.0
+        var end: Float = 0.0
+        for segment: AbstractSegment in segments {
+            
+            if let wds = segment as? WindowDefinitionSegment {
+                
+                // It's a start ?
+                if start == 0.0 && end == 0.0 {
+                    start = wds.pts
+                    continue
+                }
+                
+                // It's and end ?
+                if start != 0.0 && end == 0.0 {
+                    end = wds.pts
+                }
+                
+                // Are we done for that subtitle ?
+                if start != 0.0 && end != 0.0 {
+                    
+                    // Add to the arrays
+                    starts.append(start)
+                    ends.append(end)
+                    
+                    // Reset them
+                    start = 0.0
+                    end = 0.0
+                }
             }
         }
         
+        // Build SRT content
+        for index in 0...subtitles.count - 1 {
+            
+            // Counter
+            let counter: Int = index + 1
+            lines.append(String(counter))
+            
+            // Start and end time
+            let start: Float = starts[index]
+            let end: Float = ends[index]
+            lines.append(String(start) + " --> " + String(end))
+            
+            // Subtitles
+            let currentSubtitle: [String] = subtitles[index]
+            for subtitle: String in currentSubtitle {
+                lines.append(subtitle)
+            }
+            
+            // Blank line
+            lines.append("")
+        }
+        
         // Write subtitles
-        Utils.write(lines: dumbWay, destination: filepath)
+        Utils.write(lines: lines, destination: filepath)
     }
 }

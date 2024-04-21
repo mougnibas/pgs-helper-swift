@@ -34,7 +34,7 @@ struct main: ParsableCommand {
         // Usage languages
         print("Supported languages :")
         for language: String in appBusiness.supportedLanguages() {
-            print(" - \(language)")
+            print("- \(language)")
         }
         print()
 
