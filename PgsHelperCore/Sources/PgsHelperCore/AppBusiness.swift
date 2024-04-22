@@ -154,6 +154,11 @@ public class AppBusiness {
             }
         }
         
+        // Create date formater
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "HH:mm:ss,SSS"
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+        
         // Build SRT content
         for index in 0...subtitles.count - 1 {
             
@@ -161,10 +166,22 @@ public class AppBusiness {
             let counter: Int = index + 1
             lines.append(String(counter))
             
-            // Start and end time
+            // Create and format start time
             let start: Float = starts[index]
+            let millisecondsStart: Double = Double(start)
+            let secondsStart: Double = TimeInterval(millisecondsStart) / 1000.0
+            let dateStart: Date = Date(timeIntervalSince1970: secondsStart)
+            let dateStartFormated = dateFormatter.string(from: dateStart)
+            
+            // Create and format end time
             let end: Float = ends[index]
-            lines.append(String(start) + " --> " + String(end))
+            let millisecondsEnd: Double = Double(end)
+            let secondsEnd: Double = TimeInterval(millisecondsEnd) / 1000.0
+            let dateEnd: Date = Date(timeIntervalSince1970: secondsEnd)
+            let dateEndFormated = dateFormatter.string(from: dateEnd)
+
+            // Start and end time
+            lines.append(dateStartFormated + " --> " + dateEndFormated)
             
             // Subtitles
             let currentSubtitle: [String] = subtitles[index]
