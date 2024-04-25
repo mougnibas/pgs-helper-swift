@@ -49,6 +49,8 @@ usage to Apple platform only (iOS 11.0+, macOS 10.13+, Mac Catalyst 13.0+, tvOS 
 
 ### [Run-length encoding specification (patent information)](https://patents.google.com/patent/US7912305)
 
+### [SRT specification](https://docs.fileformat.com/video/srt/)
+
 ## Swift (multi-platform)
 
 ### [Swift Programming Language](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/)
