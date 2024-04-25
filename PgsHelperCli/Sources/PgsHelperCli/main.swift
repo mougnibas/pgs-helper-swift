@@ -24,12 +24,21 @@ struct main: ParsableCommand {
     
     /// Language to use for text recognization.
     @Option(help: "The language to use. if omited, default will be 'en-US'. Common values are 'en-US', 'fr-FR', ' it-IT', 'de-DE', 'es-ES', 'pt-BR', 'zh-Hans', 'zh-Hant', 'yue-Hans', 'yue-Hant', 'ko-KR', 'ja-JP', 'ru-RU', 'uk-UA', 'th-TH' and 'vi-VT' ")
-    var language: String? = nil
+    var language: String = "en-US"
+    
+    @Option(help: "Enable debug mode")
+    var debug: Bool = false
     
     mutating func run() throws {
         
         // Create an app instance
         let appBusiness: AppBusiness = AppBusiness()
+        
+        // Debug mode ?
+        if debug {
+            print("Debug mode is enable")
+            print()
+        }
         
         // Usage languages
         print("Supported languages :")
@@ -51,9 +60,9 @@ struct main: ParsableCommand {
         print()
         
         // Use Apple AI
-        print("Recognize text from bitmap using Apple AI ...")
-        appBusiness.recognizeTextFromBitmap()
-        print("Recognize text from bitmap using Apple AI done !")
+        print("Recognize text ('\(language)') from bitmap using Apple AI ...")
+        appBusiness.recognizeTextFromBitmap(language, debug, output)
+        print("Recognize text ('\(language)') from bitmap using Apple AI done !")
         print()
         
         // Make SRT
@@ -61,6 +70,5 @@ struct main: ParsableCommand {
         appBusiness.makeSrt(filepath: output)
         print("Creating SRT file done !")
         print()
-        
     }
 }

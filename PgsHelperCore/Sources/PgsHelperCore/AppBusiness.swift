@@ -8,10 +8,11 @@
 import Foundation
 import CoreImage
 
-import PgsHelperBitmapToText
+import PgsHelperCommon
 import PgsHelperDecoderSup
 import PgsHelperDecoderRle
-import PgsHelperCommon
+import PgsHelperBitmapToText
+import PgsHelperEncoderSrt
 
 /// Business app class.
 public class AppBusiness {
@@ -73,7 +74,7 @@ public class AppBusiness {
     }
     
     /// Use machine learning to recognize text from bitmap.
-    public func recognizeTextFromBitmap(language: String = "en-US") {
+    public func recognizeTextFromBitmap( _ language: String = "en-US", _ debug: Bool = false, _ path: String? ) {
         
         // This variable will store the current subtitle identifier
         var id: Int = 0
@@ -90,24 +91,17 @@ public class AppBusiness {
             // Add the lines to the subtitles
             subtitles.append(lines)
             
-            // TODO Remove this debug lines
-            /*
-            print("Subtitle \(id) / \(pixmaps.count)")
-            for line: String in lines {
-                print(line)
+            // if debug mode is enable, also write decoded images
+            if debug {
+                let image: CIImage = Utils.convert(pixmap)
+                do {
+                    let destination: String = path! + "-" + String(id) + ".png"
+                    try Utils.write(image: image, destination: destination)
+                } catch {
+                    print("Something gone wrong")
+                    exit(-1)
+                }
             }
-            let image: CIImage = Utils.convert(pixmap)
-            do {
-                let destination: String = "/Users/yoann/Documents/subs/" + String(id) + ".png"
-                try Utils.write(image: image, destination: destination)
-                print("Writing to '\(destination)'")
-            } catch {
-                print("Something gone wrong")
-                exit(-1)
-            }
-            print()
-             */
-            
         }
     }
     
@@ -115,10 +109,6 @@ public class AppBusiness {
     public func makeSrt(filepath: String) {
         
         // TODO This is one of my most terrible code ever...
-        // TODO Make a SRT model and business logic code.
-        
-        // SRT lines
-        var lines: [String] = []
         
         // Get start and end times
         var starts: [Float] = []
@@ -154,43 +144,37 @@ public class AppBusiness {
             }
         }
         
-        // Create date formater
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "HH:mm:ss,SSS"
-        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
-        
         // Build SRT content
+        var entries: [SubtitleEntry] = []
         for index in 0...subtitles.count - 1 {
             
             // Counter
             let counter: Int = index + 1
-            lines.append(String(counter))
             
             // Create and format start time
             let start: Float = starts[index]
             let millisecondsStart: Double = Double(start)
             let secondsStart: Double = TimeInterval(millisecondsStart) / 1000.0
             let dateStart: Date = Date(timeIntervalSince1970: secondsStart)
-            let dateStartFormated = dateFormatter.string(from: dateStart)
             
             // Create and format end time
             let end: Float = ends[index]
             let millisecondsEnd: Double = Double(end)
             let secondsEnd: Double = TimeInterval(millisecondsEnd) / 1000.0
             let dateEnd: Date = Date(timeIntervalSince1970: secondsEnd)
-            let dateEndFormated = dateFormatter.string(from: dateEnd)
-
-            // Start and end time
-            lines.append(dateStartFormated + " --> " + dateEndFormated)
             
             // Subtitles
             let currentSubtitle: [String] = subtitles[index]
-            for subtitle: String in currentSubtitle {
-                lines.append(subtitle)
-            }
             
-            // Blank line
-            lines.append("")
+            // Create the entry and add it to the array
+            let entry: SubtitleEntry = SubtitleEntry(id: counter, start: dateStart, end: dateEnd, texts: currentSubtitle)
+            entries.append(entry)
+        }
+        
+        // SRT lines
+        var lines: [String] = []
+        for entry: SubtitleEntry in entries {
+            lines.append(entry.formated)
         }
         
         // Write subtitles

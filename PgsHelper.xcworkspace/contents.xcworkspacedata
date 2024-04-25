@@ -20,6 +20,9 @@
       location = "group:PgsHelperBitmapToText">
    </FileRef>
    <FileRef
+      location = "group:PgsHelperEncoderSrt">
+   </FileRef>
+   <FileRef
       location = "group:PgsHelperCore">
    </FileRef>
    <FileRef

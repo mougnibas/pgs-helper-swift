@@ -110,6 +110,29 @@ public class Utils {
         // Return the CGImage
         return cgimage
     }
+    
+    /// Convert from Y'CbCr colorspace to RGB colorspace.
+    ///
+    /// See https://en.wikipedia.org/wiki/YCbCr .
+    /// See https://colorfaq.com/article/how-to-correctly-convert-yuv-to-rgb-3ZwZTlC1n .
+    /// See https://fr.wikipedia.org/wiki/YCbCr .
+    /// See https://web.archive.org/web/20180421030430/http://www.equasys.de/colorconversion.html .
+    public static func convert( _ y: UInt8, _ cb: UInt8, _ cr: UInt8 ) -> [UInt8] {
+        
+        let yComponent: Double = Double(y)
+        let cbComponent: Double = Double(cb) - 128.0
+        let crComponent: Double = Double(cr) - 128.0
+        
+        let rDouble: Double = yComponent + 1.402 * crComponent
+        let gDouble: Double = yComponent - 0.34414 * cbComponent - 0.71414 * crComponent
+        let bDouble: Double = yComponent + 1.772 * cbComponent
+        
+        let r: UInt8 = UInt8(max(0, min(255, rDouble)))
+        let g: UInt8 = UInt8(max(0, min(255, gDouble)))
+        let b: UInt8 = UInt8(max(0, min(255, bDouble)))
+        
+        return [r, g, b]
+    }
 
     /// Write a CIImage to a destination file, in PNG format.
     ///
@@ -153,5 +176,24 @@ public class Utils {
             print("something go wrong")
             exit(-1)
         }
+    }
+    
+    /// Format a date to a "HH:mm:ss,SSS" formated string.
+    ///
+    /// - Parameter date : The date date to format
+    ///
+    /// - Returns : A formated (HH:mm:ss,SSS) date.
+    public static func format(date: Date) -> String {
+        
+        // Create date formater
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "HH:mm:ss,SSS"
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+        
+        // Format the date
+        let dateFormated = dateFormatter.string(from: date)
+        
+        // Return the result
+        return dateFormated
     }
 }
