@@ -5,7 +5,18 @@ Main usage is decoding PGS (metadata and bitmap pictures), then use Apple machin
 
 # Usage
 
-TODO
+```
+PgsHelperCli <input> <output> [--language <language>] [--debug <debug>]
+```
+
+Examples :
+
+```
+PgsHelperCli my-input-sub.sup my-output-sub.srt
+PgsHelperCli my-input-sub.sup my-output-sub.srt --language fr-FR
+PgsHelperCli my-input-sub.sup my-output-sub.srt --language fr-FR --debug true
+PgsHelperCli my-input-sub.sup my-output-sub.srt --debug true
+```
 
 # Dev notes
 
