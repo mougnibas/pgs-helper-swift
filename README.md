@@ -24,7 +24,7 @@ PgsHelperCli my-input-sub.sup my-output-sub.srt --debug true
 
 Xcode integration is actually fairly limited in this project. Only workspace view is here.
 
-You *may* need to export/import scheme (don't forget to check "Shared") to force Xcode to create appropriate files under `PgsHelper.xcworkspace/xcshareddata/xcschemes`. `¯\_(ツ)_/¯`
+You *may* (`¯\_(ツ)_/¯`) need to export/import scheme (don't forget to check "Shared") to force Xcode to create appropriate files under `PgsHelper.xcworkspace/xcshareddata/xcschemes`.
 
 ### 'PgsHelperCli' Schema
 
