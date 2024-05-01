@@ -24,6 +24,14 @@ PgsHelperCli my-input-sub.sup my-output-sub.srt --debug true
 
 Xcode integration is actually fairly limited in this project. Only workspace view is here.
 
+### 'PgsHelperCli' Schema
+
+`Product / Scheme / Edit Scheme`
+
+`Run / Arguments / Arguments Passed On Launch`
+
+Change first and second arguments to your PGS and SRT data file path.
+
 ## Swift CLI integration
 
 Build, test and run is done throw swift CLI.
