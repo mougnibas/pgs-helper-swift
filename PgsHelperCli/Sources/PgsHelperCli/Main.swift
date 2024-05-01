@@ -12,7 +12,7 @@ import PgsHelperCore
 /// I don't like standalone root level code.
 /// Let's add some useless code for feel good purpose.
 @main
-struct main: ParsableCommand {
+struct Main: ParsableCommand {
     
     /// Input file path.
     @Argument(help: "Input file to read. Must be a PGS/SUP file.")
