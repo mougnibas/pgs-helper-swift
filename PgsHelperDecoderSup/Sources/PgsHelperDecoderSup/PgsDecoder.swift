@@ -33,6 +33,11 @@ public class PgsDecoder {
 
         // Buffer to use for reading data
         var buffer: UnsafeMutablePointer<UInt8>
+        
+        // Try to avoid bad segments
+        var lastCompositionIndex: Int = -1
+        var currentCompositionIndex: Int = -1
+        var needToSkip: Bool = false
 
         // Define header buffer size
         let headerSegmentBufferSize = 13
@@ -84,6 +89,17 @@ public class PgsDecoder {
                 let objectCroppedFlag: Bool                                           = buffer[14] == 0x40 ? true : false
                 let objectHorizontalPosition: Int                                     = Int(Utils.convert(firstByte: buffer[15], lastByte: buffer[16]))
                 let objectVerticalPosition: Int                                       = Int(Utils.convert(firstByte: buffer[17], lastByte: buffer[18]))
+                
+                // Sometimes, segments may be duplicated for some reasons.
+                // This was encounter once, the same PCS was duplicated (one after another one).
+                // We don't want that. Just ignore them.
+                currentCompositionIndex = compositionNumber
+                if currentCompositionIndex != lastCompositionIndex {
+                    lastCompositionIndex = currentCompositionIndex
+                    needToSkip = false
+                } else {
+                    needToSkip = true
+                }
             
                 // Create the PCS object
                 segment = PresentationCompositionSegment(magicNumber: magicNumber, pts: pts, dts: dts, type: type, size: size, width: width, height: height, framerate: framerate, compositionNumber: compositionNumber, compositionState: compositionState, paletteUpdateFlag: paletteUpdateFlag, paletteId: paletteId, numberOfCompositionObjects: numberOfCompositionObjects, objectId: objectId, windowId: windowId, objectCroppedFlag: objectCroppedFlag, objectHorizontalPosition: objectHorizontalPosition, objectVerticalPosition: objectVerticalPosition)
@@ -158,7 +174,10 @@ public class PgsDecoder {
             }
             
             // Add the current segment to the list of segments
-            segments.append(segment)
+            // But only if we don't need to skip it
+            if !needToSkip {
+                segments.append(segment)
+            }
         }
         
         // Return the segments
