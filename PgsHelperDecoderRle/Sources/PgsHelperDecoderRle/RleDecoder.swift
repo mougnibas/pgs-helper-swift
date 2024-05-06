@@ -21,7 +21,7 @@ public class RleDecoder {
         
         // TODO Understand color range (0-255) meaning.
         // Maybe :
-        // - color 255 : transparency 100%
+        // - color 255 : opacity 0%
         
         // Index used to move
         var index: Int = 0
@@ -53,10 +53,18 @@ public class RleDecoder {
                 tempWidth = tempWidth + 1
                 
                 // Add pixel to buffer
-                buffer.append(color)
-                buffer.append(color)
-                buffer.append(color)
-                buffer.append(0xFF)
+                if color == 255 {
+                    buffer.append(color)
+                    buffer.append(color)
+                    buffer.append(color)
+                    buffer.append(0x00)
+                } else {
+                    buffer.append(color)
+                    buffer.append(color)
+                    buffer.append(color)
+                    buffer.append(0xFF)
+                }
+                
                 
             } else {
                 
@@ -149,10 +157,19 @@ public class RleDecoder {
                         
                         // Add pixel to buffer
                         for index in 1 ... pixels {
-                            buffer.append(color)
-                            buffer.append(color)
-                            buffer.append(color)
-                            buffer.append(0xFF)
+                            
+                            // Add pixel to buffer
+                            if color == 255 {
+                                buffer.append(color)
+                                buffer.append(color)
+                                buffer.append(color)
+                                buffer.append(0x00)
+                            } else {
+                                buffer.append(color)
+                                buffer.append(color)
+                                buffer.append(color)
+                                buffer.append(0xFF)
+                            }
                         }
                         
                     // If discriminiator is 0x03, then it's "L pixels in color C (L between 64 and 16383)".
@@ -179,10 +196,20 @@ public class RleDecoder {
                         
                         // Add pixel to buffer
                         for index in 1 ... pixels {
-                            buffer.append(color)
-                            buffer.append(color)
-                            buffer.append(color)
-                            buffer.append(0xFF)
+                            
+                            // Add pixel to buffer
+                            if color == 255 {
+                                buffer.append(color)
+                                buffer.append(color)
+                                buffer.append(color)
+                                buffer.append(0x00)
+                            } else {
+                                buffer.append(color)
+                                buffer.append(color)
+                                buffer.append(color)
+                                buffer.append(0xFF)
+                            }
+                            
                         }
                         
                     default :
