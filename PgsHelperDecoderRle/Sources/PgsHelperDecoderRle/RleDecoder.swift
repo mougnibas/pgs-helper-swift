@@ -19,6 +19,10 @@ public class RleDecoder {
     /// - Returns: The decoded pixel map representation of RLE image.
     public static func decode( _ fromRLE: [UInt8]) -> PixmapPicture {
         
+        // TODO Understand color range (0-255) meaning.
+        // Maybe :
+        // - color 255 : transparency 100%
+        
         // Index used to move
         var index: Int = 0
         
