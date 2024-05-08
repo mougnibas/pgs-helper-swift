@@ -110,7 +110,6 @@ public class AppBusiness {
         
         // TODO This is one of my most terrible code ever...
         
-        // FIXME There is a bug in this starts/ends code.
         // Get start and end times
         var starts: [Float] = []
         var ends: [Float] = []
