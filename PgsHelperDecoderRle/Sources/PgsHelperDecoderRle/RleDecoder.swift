@@ -19,9 +19,12 @@ public class RleDecoder {
     /// - Returns: The decoded pixel map representation of RLE image.
     public static func decode( _ fromRLE: [UInt8]) -> PixmapPicture {
         
-        // TODO Understand color range (0-255) meaning.
+        // Following rules are very subjective.
         // Maybe :
-        // - color 255 : opacity 0%
+        // - color 001       = white
+        // - color 002       = black
+        // - color 255       = opacity 0% (or transparency 100%)
+        // - color [003;254] = This color value
         
         // Index used to move
         var index: Int = 0
@@ -53,10 +56,20 @@ public class RleDecoder {
                 tempWidth = tempWidth + 1
                 
                 // Add pixel to buffer
-                if color == 255 {
-                    buffer.append(color)
-                    buffer.append(color)
-                    buffer.append(color)
+                if color == 1 {
+                    buffer.append(0xFF)
+                    buffer.append(0xFF)
+                    buffer.append(0xFF)
+                    buffer.append(0xFF)
+                } else if color == 2 {
+                    buffer.append(0x00)
+                    buffer.append(0x00)
+                    buffer.append(0x00)
+                    buffer.append(0xFF)
+                } else if color == 255 {
+                    buffer.append(0x00)
+                    buffer.append(0x00)
+                    buffer.append(0x00)
                     buffer.append(0x00)
                 } else {
                     buffer.append(color)
@@ -64,7 +77,6 @@ public class RleDecoder {
                     buffer.append(color)
                     buffer.append(0xFF)
                 }
-                
                 
             } else {
                 
@@ -159,10 +171,20 @@ public class RleDecoder {
                         for index in 1 ... pixels {
                             
                             // Add pixel to buffer
-                            if color == 255 {
-                                buffer.append(color)
-                                buffer.append(color)
-                                buffer.append(color)
+                            if color == 1 {
+                                buffer.append(0xFF)
+                                buffer.append(0xFF)
+                                buffer.append(0xFF)
+                                buffer.append(0xFF)
+                            } else if color == 2 {
+                                buffer.append(0x00)
+                                buffer.append(0x00)
+                                buffer.append(0x00)
+                                buffer.append(0xFF)
+                            } else if color == 255 {
+                                buffer.append(0x00)
+                                buffer.append(0x00)
+                                buffer.append(0x00)
                                 buffer.append(0x00)
                             } else {
                                 buffer.append(color)
@@ -198,10 +220,20 @@ public class RleDecoder {
                         for index in 1 ... pixels {
                             
                             // Add pixel to buffer
-                            if color == 255 {
-                                buffer.append(color)
-                                buffer.append(color)
-                                buffer.append(color)
+                            if color == 1 {
+                                buffer.append(0xFF)
+                                buffer.append(0xFF)
+                                buffer.append(0xFF)
+                                buffer.append(0xFF)
+                            } else if color == 2 {
+                                buffer.append(0x00)
+                                buffer.append(0x00)
+                                buffer.append(0x00)
+                                buffer.append(0xFF)
+                            } else if color == 255 {
+                                buffer.append(0x00)
+                                buffer.append(0x00)
+                                buffer.append(0x00)
                                 buffer.append(0x00)
                             } else {
                                 buffer.append(color)
@@ -209,7 +241,6 @@ public class RleDecoder {
                                 buffer.append(color)
                                 buffer.append(0xFF)
                             }
-                            
                         }
                         
                     default :
