@@ -18,12 +18,12 @@ public class PgsDecoder {
     ///     - filepath: The path to a PGS (sup) file.
     ///
     /// - Returns : An array of segments.
-    public static func makeSegments(filepath: String) -> [AbstractSegment] {
+    public static func makeSegments(filepath: String) -> [Segment] {
         
         // Create an empty array.
         // It will grow automatically.
         // We don't know the size yet at creation time.
-        var segments: [AbstractSegment] = []
+        var segments: [Segment] = []
 
         // Create the input stream
         let input: InputStream = InputStream(fileAtPath: filepath)!;
@@ -59,17 +59,17 @@ public class PgsDecoder {
             let magicNumber: String               = String(bytes: [buffer[0], buffer[1]], encoding: .ascii)!
             let pts: Int                          = Int(Utils.convert(firstByte: buffer[2], secondByte: buffer[3], thirdByte: buffer[4], lastByte: buffer[5]))
             let dts: Int                          = Int(Utils.convert(firstByte: buffer[6], secondByte: buffer[7], thirdByte: buffer[8], lastByte: buffer[9]))
-            let type: AbstractSegment.SegmentType = AbstractSegment.SegmentType(rawValue: buffer[10])!
+            let type: SegmentType                 = SegmentType(rawValue: buffer[10])!
             let size: Int                         = Int(Utils.convert(firstByte: buffer[11], lastByte: buffer[12]))
             
             // The segment to add later to the list
-            let segment: AbstractSegment
+            let segment: Segment
             
             // Change decoding behavior depending on current segment type
             switch (type) {
                 
             // Is it a Presentation Composition Segment (PCS) ?
-            case AbstractSegment.SegmentType.PCS :
+            case SegmentType.PCS :
             
                 // Read PCS data
                 buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: size)
@@ -105,7 +105,7 @@ public class PgsDecoder {
                 segment = PresentationCompositionSegment(magicNumber: magicNumber, pts: pts, dts: dts, type: type, size: size, width: width, height: height, framerate: framerate, compositionNumber: compositionNumber, compositionState: compositionState, paletteUpdateFlag: paletteUpdateFlag, paletteId: paletteId, numberOfCompositionObjects: numberOfCompositionObjects, objectId: objectId, windowId: windowId, objectCroppedFlag: objectCroppedFlag, objectHorizontalPosition: objectHorizontalPosition, objectVerticalPosition: objectVerticalPosition)
                 
             // Is it a Window Definition Segment (WDS) ?
-            case AbstractSegment.SegmentType.WDS :
+            case SegmentType.WDS :
                 
                 // Read WDS data
                 buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: size)
@@ -123,7 +123,7 @@ public class PgsDecoder {
                 segment = WindowDefinitionSegment(magicNumber: magicNumber, pts: pts, dts: dts, type: type, size: size, numberOfWindows: numberOfWindows, windowsId: windowsId, windowsHorizontalPosition: windowsHorizontalPosition, windowsVerticalPosition: windowsVerticalPosition, windowWidth: windowWidth, windowHeight: windowHeight)
                 
             // Is it a Palette Definition Segment (PDS) ?
-            case AbstractSegment.SegmentType.PDS :
+            case SegmentType.PDS :
                 
                 // Read PDS data
                 buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: size)
@@ -142,7 +142,7 @@ public class PgsDecoder {
                 segment = PaletteDefinitionSegment(magicNumber: magicNumber, pts: pts, dts: dts, type: type, size: size, paletteId: paletteId, paletteVersionNumber: paletteVersionNumber, paletteEntryId: paletteEntryId, luminance: luminance, colorDifferenceRed: colorDifferenceRed, colorDifferenceBlue: colorDifferenceBlue, transparency: transparency)
                 
             // Is it an Object Definition Segment (ODS) ?
-            case AbstractSegment.SegmentType.ODS :
+            case SegmentType.ODS :
                 
                 // Read ODS data
                 buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: size)
@@ -166,7 +166,7 @@ public class PgsDecoder {
                 segment = ObjectDefinitionSegment(magicNumber: magicNumber, pts: pts, dts: dts, type: type, size: size, objectId: objectId, objectVersionNumber: objectVersionNumber, sequenceFlag: sequenceFlag, objectDataLength: objectDataLength, width: width, height: height, objectData: objectData)
                 
             // Is it and End Segment (END) ?
-            case AbstractSegment.SegmentType.END :
+            case SegmentType.END :
                 
                 // Nothing more to read.
                 // Just create END object

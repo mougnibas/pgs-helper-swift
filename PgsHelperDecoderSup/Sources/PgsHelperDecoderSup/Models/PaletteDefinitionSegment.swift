@@ -5,17 +5,25 @@
 // Everyone is permitted to copy and distribute verbatim copies
 // of this license document, but changing it is not allowed.
 
-//
-//  PaletteDefinitionSegment.swift
-//  PresentationGraphicStreamHelper
-//
-//  Created by Yoann MOUGNIBAS on 11/04/2024.
-//
-
 import Foundation
 
 /// A Palette Definition Segment (PDS).
-public class PaletteDefinitionSegment : AbstractSegment {
+public struct PaletteDefinitionSegment: Segment {
+    
+    // Magic numer (should be "PG").
+    public var magicNumber: String
+    
+    /// Presentation Timestamp (converted to ms).
+    public var pts: Float
+    
+    /// Decoding Timestamp (should be 0).
+    public var dts: Float
+    
+    /// Segment type (PDS, ODS, PCS, WDS or END).
+    public var type: SegmentType
+    
+    /// Segment size.
+    public var size: Int
     
     /// ID of the palette.
     public let paletteId: Int
@@ -57,6 +65,13 @@ public class PaletteDefinitionSegment : AbstractSegment {
     public init(magicNumber: String, pts: Int, dts: Int, type: SegmentType, size: Int,
                 paletteId: Int, paletteVersionNumber: Int, paletteEntryId: Int, luminance: Int, colorDifferenceRed: Int, colorDifferenceBlue: Int, transparency: Int) {
         
+        // Assign common local members
+        self.magicNumber = magicNumber
+        self.pts  = Float(pts) / 90.0
+        self.dts  = Float(dts) / 90.0
+        self.type = type
+        self.size = Int(size)
+        
         // Assign local members
         self.paletteId = paletteId
         self.paletteVersionNumber = paletteVersionNumber
@@ -65,12 +80,9 @@ public class PaletteDefinitionSegment : AbstractSegment {
         self.colorDifferenceRed = colorDifferenceRed
         self.colorDifferenceBlue = colorDifferenceBlue
         self.transparency = transparency
-        
-        // Assign super class local members
-        super.init(magicNumber: magicNumber, pts: pts, dts: dts, type: type, size: size)
     }
     
-    public override var description: String {
+    public var description: String {
         return "PaletteDefinitionSegment(magicNumber='\(magicNumber)', pts='\(pts)', dts='\(dts)', type='\(type)', size='\(size)', paletteId='\(paletteId)', paletteVersionNumber='\(paletteVersionNumber)', paletteEntryId='\(paletteEntryId)', luminance='\(luminance)', colorDifferenceRed='\(colorDifferenceRed)', colorDifferenceBlue='\(colorDifferenceBlue)', transparency='\(transparency)')"
     }
 }

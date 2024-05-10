@@ -5,17 +5,25 @@
 // Everyone is permitted to copy and distribute verbatim copies
 // of this license document, but changing it is not allowed.
 
-//
-//  WindowDefinitionSegment.swift
-//  PresentationGraphicStreamHelper
-//
-//  Created by Yoann MOUGNIBAS on 11/04/2024.
-//
-
 import Foundation
 
 /// A Window Definition Segment (WDS).
-public class WindowDefinitionSegment : AbstractSegment {
+public struct WindowDefinitionSegment: Segment {
+    
+    // Magic numer (should be "PG").
+    public var magicNumber: String
+    
+    /// Presentation Timestamp (converted to ms).
+    public var pts: Float
+    
+    /// Decoding Timestamp (should be 0).
+    public var dts: Float
+    
+    /// Segment type (PDS, ODS, PCS, WDS or END).
+    public var type: SegmentType
+    
+    /// Segment size.
+    public var size: Int
     
     /// Number of windows defined in this segment.
     public let numberOfWindows: Int
@@ -53,6 +61,13 @@ public class WindowDefinitionSegment : AbstractSegment {
     public init(magicNumber: String, pts: Int, dts: Int, type: SegmentType, size: Int,
                 numberOfWindows: Int, windowsId: Int, windowsHorizontalPosition: Int, windowsVerticalPosition: Int, windowWidth: Int, windowHeight: Int) {
         
+        // Assign common local members
+        self.magicNumber = magicNumber
+        self.pts  = Float(pts) / 90.0
+        self.dts  = Float(dts) / 90.0
+        self.type = type
+        self.size = Int(size)
+        
         // Assign local members
         self.numberOfWindows = numberOfWindows
         self.windowsId = windowsId
@@ -60,12 +75,9 @@ public class WindowDefinitionSegment : AbstractSegment {
         self.windowsVerticalPosition = windowsVerticalPosition
         self.windowWidth = windowWidth
         self.windowHeight = windowHeight
-        
-        // Assign super class local members
-        super.init(magicNumber: magicNumber, pts: pts, dts: dts, type: type, size: size)
     }
     
-    public override var description: String {
+    public var description: String {
         return "WindowDefinitionSegment(magicNumber='\(magicNumber)', pts='\(pts)', dts='\(dts)', type='\(type)', size='\(size)', numberOfWindows='\(numberOfWindows)', windowsId='\(windowsId)', windowsHorizontalPosition='\(windowsHorizontalPosition)', windowsVerticalPosition='\(windowsVerticalPosition)', windowWidth='\(windowWidth)', windowHeight='\(windowHeight)')"
     }
 }

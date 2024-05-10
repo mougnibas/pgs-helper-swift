@@ -18,7 +18,7 @@ import PgsHelperEncoderSrt
 public class AppBusiness {
 
     /// PGS segments.
-    var segments: [AbstractSegment]
+    var segments: [Segment]
     
     /// Pixel map pictures.
     var pixmaps: [PixmapPicture]
@@ -58,7 +58,7 @@ public class AppBusiness {
     public func makeBitmaps() {
 
         // for each segments
-        for segment: AbstractSegment in segments {
+        for segment: Segment in segments {
 
             // Only works with ODS
             if let ods = segment as? ObjectDefinitionSegment {
@@ -115,7 +115,7 @@ public class AppBusiness {
         var ends: [Float] = []
         var start: Float = 0.0
         var end: Float = 0.0
-        for segment: AbstractSegment in segments {
+        for segment: Segment in segments {
             
             if let wds = segment as? WindowDefinitionSegment {
                 
